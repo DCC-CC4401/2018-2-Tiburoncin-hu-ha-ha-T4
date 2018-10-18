@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="css/bootstrap.min.css"/>
+        <link rel="stylesheet" href="css/coeval.css"/>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+        <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="js/coeval.js"></script>
+        <title>Sistema de Coevaluaciones DCC</title>
+    </head>
+    <body>
+        <!-- Barra superior -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-5 py-3">
+            <a class="navbar-brand" href="#">Sistema de Coevaluaciones DCC</a>
+            <!-- Al achicar la pantalla, el menú se oculta y se vuelve desplegable mediante este botón. -->
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon">
+                    <i class="fa fa-navicon"></i>
+                </span>
+            </button>
+
+            <!-- Menú superior-derecha -->
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ml-auto">
+                    <form class="nav-link form-inline my-2 my-lg-0">
+                        <input class="form-control" type="search" placeholder="Buscar alumno..." aria-label="Buscar alumno">
+                    </form>
+                    <li class="divider-vertical"></li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Juanito Pérez</a>
+                    </li>
+                    <li class="divider-vertical"></li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Cerrar Sesión</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <!-- FIN Barra superior -->
+
+        <!-- Cuerpo -->
+        <div class="container mt-4"> <!-- Contenedor responsivo, se adapta a la pantalla con puntos de quiebre. -->
+
+            <!--
+            <h3 class="d-inline-block page-title">Inicio</h3>
+            <hr/>
+            -->
+
+            <!-- Formulario para agregar una coevaluación. -->
+            <!-- Permanece oculto hasta apretar el botón correspondiente. -->
+            <div id="add-coev-form" class="mb-4">
+                <h4 class="mt-3">Agregar Coevaluación</h4>
+                <form>
+                    <div class="form-row">
+                        <div class="form-group col-6">
+                            <label for="titleCoev">Título de la coevaluación</label>
+                            <input type="text" class="form-control" id="titleCoev" placeholder="ej: Tarea 1, Presentación 3, etc.">
+                        </div>
+                        <div class="form-group col-6">
+                            <label for="inputCursoCoev">Curso</label>
+                            <select id="inputCursoCoev" class="form-control">
+                                <option selected>Seleccione un curso...</option>
+                                <option>CC4401-1 Ingeniería de Software I, 2025-1</option>
+                                <option>CC4401-1 Ingeniería de Software I, 2018-2</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-3">
+                            <label for="dateStartCoev">Fecha de inicio</label>
+                            <input type="date" class="form-control" id="dateStartCoev" placeholder="dd/mm/yyyy">
+                        </div>
+                        <div class="form-group col-2">
+                            <label for="timeStartCoev">Hora de inicio</label>
+                            <input type="time" class="form-control" id="timeStartCoev" placeholder="hh:mm">
+                        </div>
+                        <div class="form-group col-3 offset-1">
+                            <label for="dateEndCoev">Fecha límite</label>
+                            <input type="date" class="form-control" id="dateEndCoev" placeholder="dd/mm/yyyy">
+                        </div>
+                        <div class="form-group col-2">
+                            <label for="timeEndCoev">Hora límite</label>
+                            <input type="time" class="form-control" id="timeEndCoev" placeholder="hh:mm">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary-custom">Confirmar</button>
+                    <button type="button" class="btn btn-cancel" onclick="cancelAdd()">Cancelar</button>
+                </form>
+                <hr/>
+            </div>
+            <!-- FIN Formulario agregar coevaluación -->
+
+            <!-- Formulario para agregar un curso. -->
+            <!-- Permanece oculto hasta apretar el botón correspondiente. -->
+            <div id="add-curso-form" class="mb-4">
+                <h4 class="mt-3">Agregar Curso</h4>
+                <form>
+                    <div class="form-row">
+                        <div class="form-group col-2">
+                            <label for="codigoCurso">Código del curso</label>
+                            <input type="text" class="form-control" id="codigoCurso" placeholder="ej: CC4401">
+                        </div>
+                        <div class="form-group col-1">
+                            <label for="seccionCurso">Sección</label>
+                            <input type="number" class="form-control" id="seccionCurso" value="1" placeholder="">
+                        </div>
+                        <div class="form-group col-1 offset-1">
+                            <label for="annoCurso">Año</label>
+                            <input type="text" class="form-control" id="annoCurso" placeholder="ej: 2018">
+                        </div>
+                        <div class="form-group col-3">
+                            <label for="semestreCurso">Semestre</label>
+                            <select id="semestreCurso" class="form-control">
+                                <option selected>Seleccione un semestre...</option>
+                                <option>Otoño - Primer semestre</option>
+                                <option>Primavera - Segundo semestre</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary-custom">Confirmar</button>
+                    <button type="button" class="btn btn-cancel" onclick="cancelAdd()">Cancelar</button>
+                </form>
+                <hr/>
+            </div>
+            <!-- FIN Formulario agregar curso -->
+
+
+            <!-- Tablas de resumen -->
+            <div class="row">
+                <!-- Tabla de coevaluaciones -->
+                <div class="col-md-9">
+                    <h4 class="d-inline-block mt-1">Últimas Coevaluaciones</h4>
+                    <button type="button" id="add-coev-btn" class="btn btn-primary-custom float-right" onclick="addCoev()">Agregar coevaluación</button>
+
+                    <div class="table-wrap table-responsive my-1"> <!-- "Envoltura" de la tabla -->
+                        <table class="table table-coeval table-striped table-hover mb-0"> <!-- Tabla -->
+                            <!-- Encabezados de tabla (Table Headers) -->
+                            <thead class="thead-light">
+                                <tr> <!-- Fila (Table Row) -->
+                                    <th class="th-fecha">Fecha inicio</th>
+                                    <th class="th-titulo">Nombre</th>
+                                    <th class="th-curso">Curso</th>
+                                    <th class="th-semestre">Sem</th>
+                                    <th class="th-fecha">Fecha límite</th>
+                                    <th class="th-estado">Estado</th>
+                                    <th class="th-iconos"></th>
+                                </tr>
+                            </thead>
+
+                            <!-- Cuerpo de tabla (Table Data) -->
+                            <tbody>
+                                <tr>
+                                    <!-- Fecha de inicio -->
+                                    <td class="td-fecha">
+                                        25:72 13/05/25
+                                        <!-- Ícono de lápiz -->
+                                        <a href="#" title="Editar fecha de inicio"><img class="clickable-icon mb-1" src="icon/edit-icon.png" alt="editar fecha" width="13" height="13"></a>
+                                    </td>
+                                    <!-- Título de coevaluación -->
+                                    <td>Tarea del futuro</td>
+                                    <!-- Curso, con ícono de rol, nombre y código -->
+                                    <td class="td-curso-full">
+                                        <div class="cargos cargos-profesor tooltip-custom">
+                                            <span class="tooltiptext"></span>
+                                        </div>
+                                        <span class="curso-nombre">Ingeniería de Software I</span>
+                                        <br>
+                                        <span class="curso-codigo">CC4401-1</span>
+                                    </td>
+                                    <!-- Semestre -->
+                                    <td>2025-1</td>
+                                    <!-- Fecha de término -->
+                                    <td class="td-fecha">
+                                        23:59 20/05/25
+                                        <!-- Ícono de lápiz -->
+                                        <a href="#" title="Editar fecha límite"><img class="clickable-icon mb-1" src="icon/edit-icon.png" alt="editar fecha" width="13" height="13"></a>
+                                    </td>
+                                    <!-- Estado -->
+                                    <td>Cerrada</td>
+                                    <!-- Ícono de acción (vacío) -->
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class="td-fecha">
+                                        12:03 11/11/18
+                                        <a href="#" title="Editar fecha de inicio"><img class="clickable-icon mb-1" src="icon/edit-icon.png" alt="editar fecha" width="13" height="13"></a>
+                                    </td>
+                                    <td>Tarea con nombre muy largo que ocupa todo el espacio</td>
+                                    <td class="td-curso-full">
+                                        <div class="cargos cargos-auxiliar tooltip-custom">
+                                            <span class="tooltiptext"></span>
+                                        </div>
+                                        <span class="curso-nombre">Ingeniería de Software I</span>
+                                        <br>
+                                        <span class="curso-codigo">CC4401-1</span>
+                                    </td>
+                                    <td>2018-2</td>
+                                    <td class="td-fecha">
+                                        23:59 21/11/18
+                                        <a href="#" title="Editar fecha límite"><img class="clickable-icon mb-1" src="icon/edit-icon.png" alt="editar fecha" width="13" height="13"></a>
+                                    </td>
+                                    <td>Abierta</td>
+                                    <td></td>
+                                </tr>
+                                <tr class="tr-pendiente"> <!-- Fila destacada como Pendiente -->
+                                    <td class="td-fecha">15:15 10/11/18</td>
+                                    <td>Trabajo Grupal 1</td>
+                                    <td class="td-curso-full">
+                                        <div class="cargos cargos-alumno tooltip-custom">
+                                            <span class="tooltiptext"></span>
+                                        </div>
+                                        <span class="curso-nombre">Proyecto de Software</span>
+                                        <br>
+                                        <span class="curso-codigo">CC5402-1</span>
+                                    </td>
+                                    <td>2018-2</td>
+                                    <td class="td-fecha">23:59 19/11/18</td>
+                                    <td>Pendiente</td>
+                                    <!-- Ícono de acción (Responder) -->
+                                    <td class="td-icon">
+                                        <a href="#" title="Responder coevaluación"><img class="clickable-icon answer-icon wiggle" src="icon/answer-icon.png" alt="Responder coevaluación" width="28" height="28"></a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="td-fecha">
+                                        20:45 08/10/18
+                                        <a href="#" title="Editar fecha de inicio"><img class="clickable-icon mb-1" src="icon/edit-icon.png" alt="editar" width="13" height="13"></a>
+                                    </td>
+                                    <td>Tarea 1</td>
+                                    <td class="td-curso-full">
+                                        <div class="cargos cargos-auxiliar tooltip-custom">
+                                            <span class="tooltiptext"></span>
+                                        </div>
+                                        <span class="curso-nombre">Ingeniería de Software I</span>
+                                        <br>
+                                        <span class="curso-codigo">CC4401-1</span>
+                                    </td>
+                                    <td>2018-2</td>
+                                    <td class="td-fecha">
+                                        23:59 16/10/18
+                                        <a href="#" title="Editar fecha límite"><img class="clickable-icon mb-1" src="icon/edit-icon.png" alt="editar" width="13" height="13"></a>
+                                    </td>
+                                    <td>Cerrada</td>
+                                    <td class="td-icon">
+                                        <a href="#" title="Publicar resultados"><img class="clickable-icon publish-icon wiggle" src="icon/publish-icon.png" alt="Publicar resultados" width="28" height="28"></a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="td-fecha">16:27 26/05/18</td>
+                                    <td>Presentación Final</td>
+                                    <td class="td-curso-full">
+                                        <div class="cargos cargos-alumno tooltip-custom">
+                                            <span class="tooltiptext"></span>
+                                        </div>
+                                        <span class="curso-nombre">Ingeniería de Software II</span>
+                                        <br>
+                                        <span class="curso-codigo">CC5401-1</span>
+                                    </td>
+                                    <td>2018-1</td>
+                                    <td class="td-fecha">23:59 03/06/18</td>
+                                    <td>Publicada</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class="td-fecha">10:28 01/06/17</td>
+                                    <td>Tarea 2</td>
+                                    <td class="td-curso-full">
+                                        <div class="cargos cargos-alumno tooltip-custom">
+                                            <span class="tooltiptext"></span>
+                                        </div>
+                                        <span class="curso-nombre">Ingeniería de Software I</span>
+                                        <br>
+                                        <span class="curso-codigo">CC4401-1</span>
+                                    </td>
+                                    <td>2017-1</td>
+                                    <td class="td-fecha">23:59 08/06/17</td>
+                                    <td>Publicada</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class="td-fecha">03:32 15/05/17</td>
+                                    <td>Tarea 1</td>
+                                    <td class="td-curso-full">
+                                        <div class="cargos cargos-alumno tooltip-custom">
+                                            <span class="tooltiptext"></span>
+                                        </div>
+                                        <span class="curso-nombre">Ingeniería de Software I</span>
+                                        <br>
+                                        <span class="curso-codigo">CC4401-1</span>
+                                    </td>
+                                    <td>2017-1</td>
+                                    <td class="td-fecha">23:59 21/05/17</td>
+                                    <td>Publicada</td>
+                                    <td></td>
+                                </tr>
+                                <!-- Filas vacías, placeholder -->
+                                <tr style="height: 38px;"><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                                <tr style="height: 38px;"><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                                <tr style="height: 38px;"><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- Tabla de cursos -->
+                <div class="col-md-3 mb-3">
+                    <h4 class="d-inline-block mt-1">Tus Cursos</h4>
+                    <button type="button" id="add-curso-btn" class="btn btn-primary-custom float-right" onclick="addCurso()">Agregar curso</button>
+
+                    <div class="table-wrap table-responsive my-1">
+                        <table class="table table-cursos table-striped table-hover mb-0">
+                            <!-- Encabezados de tabla (Table Headers) -->
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Curso</th>
+                                    <th class="th-semestre">Sem</th>
+                                </tr>
+                            </thead>
+                            <!-- Cuerpo de tabla (Table Data) -->
+                            <tbody>
+                                <tr>
+                                    <!-- Curso, con ícono de rol, nombre y código -->
+                                    <td class="td-curso-full">
+                                        <div class="cargos cargos-profesor tooltip-custom">
+                                            <span class="tooltiptext"></span>
+                                        </div>
+                                        <span class="curso-nombre">Ingeniería de Software I</span>
+                                        <br>
+                                        <span class="curso-codigo">CC4401-1</span>
+                                    </td>
+                                    <!-- Semestre -->
+                                    <td>2025-1</td>
+                                </tr>
+                                <tr>
+                                    <td class="td-curso-full">
+                                        <div class="cargos cargos-auxiliar tooltip-custom">
+                                            <span class="tooltiptext"></span>
+                                        </div>
+                                        <span class="curso-nombre">Ingeniería de Software I</span>
+                                        <br>
+                                        <span class="curso-codigo">CC4401-1</span>
+                                    </td>
+                                    <td>2018-2</td>
+                                </tr>
+                                <tr>
+                                    <td class="td-curso-full">
+                                        <div class="cargos cargos-alumno tooltip-custom">
+                                            <span class="tooltiptext"></span>
+                                        </div>
+                                        <span class="curso-nombre">Proyecto de Software</span>
+                                        <br>
+                                        <span class="curso-codigo">CC5402-1</span>
+                                    </td>
+                                    <td>2018-1</td>
+                                </tr>
+                                <tr>
+                                    <td class="td-curso-full">
+                                        <div class="cargos cargos-alumno tooltip-custom">
+                                            <span class="tooltiptext"></span>
+                                        </div>
+                                        <span class="curso-nombre">Ingeniería de Software II</span>
+                                        <br>
+                                        <span class="curso-codigo">CC5401-1</span>
+                                    </td>
+                                    <td>2017-2</td>
+                                </tr>
+                                <tr>
+                                    <td class="td-curso-full">
+                                        <div class="cargos cargos-alumno tooltip-custom">
+                                            <span class="tooltiptext"></span>
+                                        </div>
+                                        <span class="curso-nombre">Ingeniería de Software I</span>
+                                        <br>
+                                        <span class="curso-codigo">CC4401-1</span>
+                                    </td>
+                                    <td>2017-1</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+            
+    </body>
+    </html>
+        

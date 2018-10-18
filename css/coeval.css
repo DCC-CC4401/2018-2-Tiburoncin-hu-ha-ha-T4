@@ -1,0 +1,527 @@
+body {
+	font-family: Roboto;
+	margin-bottom: 30px;
+	color: #062f42;
+	overflow-y: scroll;
+}
+
+.form-group label {
+	margin-bottom: 0.2rem;
+}
+
+#add-coev-form,
+#add-curso-form,
+#cambiar-contrasena,
+#notas-resumen,
+#gestion-grupo,
+#gestion-estudiante { display: none; }
+
+.color-text {
+	color: #4c94c4;
+}
+
+.page-title {
+	margin-top: 1.5rem;
+	margin-bottom: 0rem;
+}
+
+
+
+/*--------------------------------------------
+  NavBar
+--------------------------------------------*/
+
+.navbar .divider-vertical {
+    margin: 0 9px;
+    border-right: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.navbar.bg-dark {
+	background-color: #083f59!important;
+}
+
+.navbar-dark .navbar-nav .nav-link, .navbar-dark .navbar-nav .nav-link:focus, .navbar-dark .navbar-nav .nav-link:hover {
+    color: #fff;
+}
+
+.navbar a {
+	color: #fff;
+	border-radius: 20px;
+}
+
+.navbar a:hover {
+	background-color: #0e5d75;
+	color: #fff;
+	border-radius: 5px;
+	transition: background-color .2s ease-in, border-radius .2s ease-in;
+}
+
+.navbar-brand {
+	font-weight: normal;
+	font-size: 1.85em;
+}
+
+.navbar > a:hover.navbar-brand  {
+	background-color: transparent;
+}
+
+.nav-item {
+	padding-top: .45rem;
+	padding-bottom: .45rem;
+}
+
+
+
+/*--------------------------------------------
+  Buttons
+--------------------------------------------*/
+
+.btn {
+	padding-top: .25rem;
+	padding-bottom: .25rem;
+}
+.btn-small {
+	font-size: 0.75rem;
+	padding: .2rem .4rem;
+}
+
+.btn.btn-primary-custom {
+	background-color: #4c94c4;
+	color: #fff;
+	border-color: transparent;
+}
+
+.btn.btn-primary-custom:hover {
+	background-color: #3e7c9e;
+}
+
+.btn.btn-primary-custom:active, .btn.btn-primary-custom.active {
+	background-color: #083f59;
+	transition: all 0s ease 0s;
+}
+
+.btn.btn-cancel {
+	background-color: #c94753;
+	color: #fff;
+	border-color: transparent;
+}
+
+.btn.btn-cancel:hover {
+	background-color: #b22f3c;
+}
+
+.btn.btn-cancel:active {
+	background-color: #8d2e37;
+	transition: all 0s ease 0s;
+}
+
+
+
+/*--------------------------------------------
+  Tables
+--------------------------------------------*/
+
+.table-wrap, .gestionar-wrap {
+    background-color: #e0e4e8;
+    padding: 2px 13px 13px 13px;
+    border-radius: 12px;
+}
+
+.table thead th {
+    font-weight: bold;
+    border-style: none;
+}
+
+.table .thead-light th {
+    background-color: #e0e4e8;
+}
+
+.table {
+	font-size: 0.875rem;
+	table-layout: fixed;
+    white-space: nowrap;
+}
+
+.table tbody {
+	background-color: #f9fafc;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+	background-color: #f9fafc;
+}
+
+.table-striped tbody tr:nth-of-type(even) {
+	background-color: #f2f5f7;
+}
+
+.table.table-hover tr {
+	cursor: pointer;
+}
+
+.table tr.active {
+	background-color: #b5c1d7!important;
+}
+
+.table tr, .table td, .table th {
+	border-style: none;
+    vertical-align: middle!important;
+}
+
+.table td, .table th {
+	padding: 0.4375rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.table-hover tbody tr:hover {
+	background-color: #ccd6e7;
+    transition: background-color .15s ease-out;
+}
+.table-hover tbody tr:click {
+	background-color: #d00;
+}
+
+.td-fecha {
+	font-size: 0.75rem;
+}
+
+.td-curso-full {
+	line-height: 0.7rem;
+}
+
+.td-curso-full .curso-nombre {
+	font-size: 0.75rem;
+}
+
+.td-curso-full .curso-codigo {
+	font-size: 0.7rem;
+}
+
+td.td-icon {
+	padding: 0.2rem;
+}
+
+.td-nota {
+	text-align: center;
+	font-size: 1.2rem;
+	font-weight: bold;
+}
+
+.td-nota-roja {
+	color: #c94753;
+}
+
+.th-fecha {	width: 6.2rem }
+.th-titulo { width: 11.6rem }
+.th-curso {	width: 8.8rem }
+.th-semestre { width: 3.2rem }
+.th-estado { width: 4.5rem }
+.th-iconos { width: 2rem }
+
+.table-notas-perfil .th-fecha { width: 4.5rem; }
+.table-notas-perfil .th-titulo { width: 11rem; }
+.table-notas-perfil .th-nota { width: 3rem; text-align: center; }
+
+.table-coeval-curso .th-fecha { width: 6.2rem; }
+.table-coeval-curso .th-titulo { width: 25rem; }
+.table-coeval-curso .th-estado { width: 4.5rem; }
+.table-coeval-curso .th-iconos { width: 2rem; }
+
+.table-cursos .th-semestre, .table-cursos-perfil .th-semestre { width: 3.8rem; }
+.table-cursos-perfil .th-rol { width: 2.4rem; }
+
+.table-grupos-curso tbody,
+.table-alumnos-curso tbody,
+.table-alumnos-coeval tbody {
+	display: block;
+	height: 250px;
+	width: 100%;
+	overflow-y: auto;
+}
+.table-grupos-curso tbody tr,
+.table-alumnos-curso tbody tr,
+.table-alumnos-coeval tbody tr {
+	display: block;
+}
+
+ .table-alumnos-coeval tbody a {
+ 	text-decoration: none;
+ 	color: inherit;
+}
+
+.gestionar-wrap {
+	padding-top: 13px;
+}
+.gestionar-content {
+	background-color: #f9fafc;
+	height: 100%;
+	width: 100%;
+	padding: 10px;
+	overflow-y: scroll;
+}
+.gestionar-content hr {
+	margin-top: 5px;
+	margin-bottom: 10px;
+}
+.gestionar-content ul {
+	padding-left: 0px;
+	list-style-type: none;
+}
+.gestionar-content li {
+	padding: 4px 0px;
+}
+.gestionar-content li:before {
+	content: "-";
+	margin-right: 10px;
+}
+
+.tr-pendiente { background-color: #f5eebd!important; }
+.tr-pendiente:hover { background-color: #f4dbb2!important; }
+
+.tr-docente { background-color: #deeded!important; }
+.tr-docente:hover { background-color: #a1d4d4!important; }
+
+#accordion .card .card-header button {
+    width: 100%;
+    text-align: left;
+	color: #495057;
+	text-decoration: none;
+	font-weight: bold;
+}
+#accordion .card-header {
+	background-color: #e0e4e8;
+	padding: 5px;
+}
+#accordion .card-body h6 {
+	margin-bottom: 0;
+}
+#accordion .card-body {
+	padding: 0;
+}
+#accordion .card {
+	margin-bottom: 10px;
+}
+#accordion .card .table {
+	margin-bottom: 0;
+}
+#accordion .card-body .table td h6 {
+	margin-left: 10px;
+}
+#accordion .card-pendiente .card-header { background-color: #f5eebd!important; }
+#accordion .card-pendiente .card-header:hover { background-color: #f4dbb2!important; }
+
+#responder-coeval .criterio-coeval {
+	padding-bottom: 2rem;
+	margin-top: 1rem;
+	margin-bottom: 3rem;
+	border-bottom: 1px solid rgba(0,0,0,.1);
+}
+#responder-coeval .criterio-coeval .form-check-inline {
+	margin-right: 3rem;
+}
+#responder-coeval li::before {
+	color: red;
+}
+
+/*--------------------------------------------
+  Tooltips
+--------------------------------------------*/
+
+.tooltip-custom {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip-custom .tooltiptext {
+    visibility: hidden;
+    width: auto;
+    opacity: 0;
+    background-color: #083f59;
+    color: #fff;
+    text-align: center;
+    padding: 7px 10px;
+    border-radius: 10px;
+    position: absolute;
+    left: 110%;
+    z-index: 1;
+}
+
+.tooltip-custom:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+    transition: opacity .2s ease-in;
+}
+
+.tooltip-custom.cargos-alumno .tooltiptext::before { content: "Alumno" }
+.tooltip-custom.cargos-auxiliar .tooltiptext::before { content: "Auxiliar" }
+.tooltip-custom.cargos-ayudante .tooltiptext::before { content: "Ayudante" }
+.tooltip-custom.cargos-profesor .tooltiptext::before { content: "Profesor" }
+
+
+
+/*--------------------------------------------
+  Login
+--------------------------------------------*/
+
+.form-signin {
+  width: 100%;
+  max-width: 400px;
+  padding: 15px;
+  margin: auto;
+}
+.form-signin .checkbox {
+  font-weight: 400;
+}
+.form-signin .form-control {
+  position: relative;
+  box-sizing: border-box;
+  height: auto;
+  padding: 10px;
+  font-size: 16px;
+}
+.form-signin .form-control:focus {
+  z-index: 2;
+}
+.form-signin input[type="email"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.form-signin input[type="password"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+
+
+/*--------------------------------------------
+  Icons
+--------------------------------------------*/
+
+.clickable-icon {
+	opacity: 0.8;
+    -webkit-transition: .25s cubic-bezier(0.85, -1.93, 0.2, 3.29);
+    -moz-transition: .25s cubic-bezier(0.85, -1.93, 0.2, 3.29);
+    transition: .25s cubic-bezier(0.85, -1.93, 0.2, 3.29);
+}
+
+.clickable-icon:hover,
+a:hover > .clickable-icon,
+button:hover > .clickable-icon {
+	opacity: 1;
+	animation: none!important;
+	-webkit-transform: scale(1.15);
+	-moz-transform: scale(1.15);
+	-ms-transform: scale(1.15);
+	transform: scale(1.15);
+}
+
+.clickable-icon:active,
+a:active > .clickable-icon,
+button:active > .clickable-icon {
+	animation: none!important;
+	transform: scale(1);
+	-webkit-transition-duration: .1s;
+	-moz-transition-duration: .1s;
+	transition-duration: .1s;
+}
+
+.cargos {
+	float: left;
+    width: 19px;
+    height: 19px;
+    background-position: center;
+    background-repeat: no-repeat;
+    margin-right: 5px;
+}
+
+.cargos-alumno { background-image: url(../icon/cargos-alumno.png) }
+.cargos-auxiliar { background-image: url(../icon/cargos-auxiliar.png) }
+.cargos-ayudante { background-image: url(../icon/cargos-ayudante.png) }
+.cargos-profesor { background-image: url(../icon/cargos-profesor.png) }
+
+
+
+/*--------------------------------------------
+  Animations
+--------------------------------------------*/
+
+#cambiar-contrasena, #notas-resumen, #add-curso-form, #add-coev-form {
+    -webkit-animation: fadein 0.8s ease-in;
+    animation: fadein 0.8s; 
+}
+
+.tr-pendiente {
+	-webkit-animation: notif-pendiente 3s ease-out 0.7s 1 normal;
+	-moz-animation: notif-pendiente 3s ease-out 0.7s 1 normal;
+	-o-animation: notif-pendiente 3s ease-out 0.7s 1 normal;
+	animation: notif-pendiente 3s ease-out 0.7s 1 normal;
+}
+
+.clickable-icon.wiggle {
+	-webkit-animation: wiggle 1.8s ease .7s infinite normal;
+	-moz-animation: wiggle 1.8s ease .7s infinite normal;
+	-o-animation: wiggle 1.8s ease .7s infinite normal;
+	animation: wiggle 1.8s ease .7s infinite normal;
+}
+
+.tr-pendiente .clickable-icon.answer-icon:hover {
+	animation: jump .8s ease-out 0s infinite normal!important;
+}
+
+/* Safari 4.0 - 8.0 */
+@-webkit-keyframes fadein {
+    0%  {opacity:0;}
+    100% {opacity:1;}}
+/* Standard syntax */
+@keyframes fadein {
+    0%  {opacity:0;}
+    100% {opacity:1;}}
+
+@keyframes notif-pendiente {
+	0% {background-color: #f5eebd;}
+	5% {background-color: #ff7788;}
+	100% {background-color: #f5eebd;}}
+@-webkit-keyframes notif-pendiente {
+	0% {background-color: #f5eebd;}
+	5% {background-color: #ff7788;}
+	100% {background-color: #f5eebd;}}
+
+@keyframes wiggle {
+	0% {transform: rotate(0deg)}
+	5% {transform: rotate(-12deg)}
+	10% {transform: rotate(17deg)}
+	15% {transform: rotate(-5deg)}
+	20% {transform: rotate(5deg)}
+	25% {transform: rotate(0deg)}
+	100% {transform: rotate(0deg)}
+}
+@-webkit-keyframes wiggle {
+	0% {transform: rotate(0deg)}
+	5% {transform: rotate(-12deg)}
+	10% {transform: rotate(17deg)}
+	15% {transform: rotate(-5deg)}
+	20% {transform: rotate(5deg)}
+	25% {transform: rotate(0deg)}
+	100% {transform: rotate(0deg)}
+}
+
+@keyframes jump {
+	0% {transform: translateY(0) rotate(0deg)}
+	13% {transform: translateY(-5px) rotate(-6deg)}
+	26% {transform: translateY(0px)}
+	35% {transform: translateY(-3px) rotate(8deg)}
+	44% {transform: translateY(0px) rotate(-3deg)}
+	60% {transform: translateY(0px) rotate(0deg)}
+	100% {transform: translateY(0px) rotate(0deg)}
+}
+@-webkit-keyframes jump {
+	0% {transform: translateY(0) rotate(0deg)}
+	13% {transform: translateY(-5px) rotate(-6deg)}
+	26% {transform: translateY(0px)}
+	35% {transform: translateY(-3px) rotate(8deg)}
+	44% {transform: translateY(0px) rotate(-3deg)}
+	60% {transform: translateY(0px) rotate(0deg)}
+	100% {transform: translateY(0px) rotate(0deg)}
+}

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="css/bootstrap.min.css"/>
+        <link rel="stylesheet" href="css/coeval.css"/>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+        <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="js/coeval.js"></script>
+        <title>Juanito Pérez - Sistema de Coevaluaciones DCC</title>
+    </head>
+    <body>
+        <!-- Barra superior -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-5 py-3">
+            <a class="navbar-brand" href="#">Sistema de Coevaluaciones DCC</a>
+            <!-- Al achicar la pantalla, el menú se oculta y se vuelve desplegable mediante este botón. -->
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon">
+                    <i class="fa fa-navicon"></i>
+                </span>
+            </button>
+
+            <!-- Menú superior-derecha -->
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ml-auto">
+                    <form class="nav-link form-inline my-2 my-lg-0">
+                        <input class="form-control" type="search" placeholder="Buscar alumno..." aria-label="Buscar alumno">
+                    </form>
+                    <li class="divider-vertical"></li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Juanito Pérez</a>
+                    </li>
+                    <li class="divider-vertical"></li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Cerrar Sesión</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <!-- FIN Barra superior -->
+
+        <!-- Cuerpo -->
+        <div class="container"> <!-- Contenedor responsivo, se adapta a la pantalla con puntos de quiebre. -->
+
+            <h3 class="d-inline-block page-title">Ficha de Alumno/a</h3>
+            <hr/>
+            <!-- Contenido -->
+            <div class="row">
+
+                <!-- Perfil -->
+                <div class="col-md-3 mb-3">
+                    <h4 class="d-inline-block mt-1">Perfil</h4>
+                    <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">Nombre</h6>
+                    <span>Jane Jenny Doe Smith</span>
+                    <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">RUT</h6>
+                    <span>19.876.543-2</span>
+                    <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">Correo Electrónico</h6>
+                    <span>ipsum@lorem.com</span>
+                </div>
+                <!-- FIN Perfil -->
+
+                <!-- Tabla de cursos -->
+                <div class="col-md-4 mb-3">
+                    <h4 class="d-inline-block mt-1">Cursos</h4>
+
+                    <div class="table-wrap table-responsive my-1">
+                        <table class="table table-cursos-perfil table-striped table-hover mb-0">
+                            <!-- Encabezados de tabla (Table Headers) -->
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Curso</th>
+                                    <th class="th-semestre">Sem</th>
+                                    <th class="th-rol"></th>
+                                </tr>
+                            </thead>
+                            <!-- Cuerpo de tabla (Table Data) -->
+                            <tbody>
+                                <tr>
+                                    <td class="td-curso-full">
+                                        <div class="cargos cargos-alumno tooltip-custom">
+                                            <span class="tooltiptext"></span>
+                                        </div>
+                                        <span class="curso-nombre">Proyecto de Software</span>
+                                        <br>
+                                        <span class="curso-codigo">CC5402-1</span>
+                                    </td>
+                                    <td>2018-2</td>
+                                    <td></td>
+                                </tr>
+                                <tr class="tr-docente" id="row-btn" onclick="showNotas()">
+                                    <td class="td-curso-full">
+                                        <div class="cargos cargos-alumno tooltip-custom">
+                                            <span class="tooltiptext"></span>
+                                        </div>
+                                        <span class="curso-nombre">Ingeniería de Software (clickeable)</span>
+                                        <br>
+                                        <span class="curso-codigo">CC5401-1</span>
+                                    </td>
+                                    <td>2018-1</td>
+                                    <td>
+                                        <div class="cargos cargos-profesor" title="Eres Profesor/a en este ramo"></div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="td-curso-full">
+                                        <div class="cargos cargos-alumno tooltip-custom">
+                                            <span class="tooltiptext"></span>
+                                        </div>
+                                        <span class="curso-nombre">Ingeniería de Software I</span>
+                                        <br>
+                                        <span class="curso-codigo">CC4401-1</span>
+                                    </td>
+                                    <td>2017-2</td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- FIN Tabla de cursos -->
+
+                <!-- Tabla de notas -->
+                <div class="col-md-5">
+                    <div id="cambiar-contrasena">
+                        <h4 class="d-inline-block mt-1">Cambiar contraseña</h4>
+                        <form>
+                            <div class="form-group">
+                                <label for="passOld">Ingrese su contraseña actual</label>
+                                <input type="password" class="form-control" id="passOld">
+                            </div>
+                            <div class="form-group">
+                                <label for="passNew">Ingrese su nueva contraseña</label>
+                                <input type="password" class="form-control" id="passNew">
+                            </div>
+                            <div class="form-group">
+                                <label for="passNewConfim">Confirme su nueva contraseña</label>
+                                <input type="password" class="form-control" id="passNewConfirm">
+                            </div>
+                            <button type="submit" class="btn btn-primary-custom">Confirmar</button>
+                            <button type="submit" class="btn btn-cancel" onclick="cancelPass()">Cancelar</button>
+                        </form>
+                    </div>
+                    <div id="notas-placeholder" class="mt-5">
+                        <h5 class="font-weight-normal text-center text-muted">Selecciona un curso para ver las notas del alumno/a</h5>
+                    </div>
+                    <div id="notas-resumen">
+                        <h4 class="d-inline-block mt-1">Notas</h4>
+                        <h5 class="float-right mb-0 mt-2 text-muted" id="currentCurso">CC5401-1, 2018-1</h5>
+
+                        <div class="table-wrap table-responsive my-1"> <!-- "Envoltura" de la tabla -->
+                            <table class="table table-notas-perfil table-striped table-hover mb-0"> <!-- Tabla -->
+                                <!-- Encabezados de tabla (Table Headers) -->
+                                <thead class="thead-light">
+                                    <tr> <!-- Fila (Table Row) -->
+                                        <th class="th-fecha">Publicada</th>
+                                        <th class="th-titulo">Título</th>
+                                        <th class="th-nota">Nota</th>
+                                    </tr>
+                                </thead>
+
+                                <!-- Cuerpo de tabla (Table Data) -->
+                                <tbody>
+                                    <tr>
+                                        <!-- Fecha de publicación -->
+                                        <td class="td-fecha">23:59 22/11/17</td>
+                                        <!-- Título de coevaluación -->
+                                        <td>Tarea 4</td>
+                                        <!-- Nota -->
+                                        <td class="td-nota">6.2</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="td-fecha">23:59 13/10/17</td>
+                                        <td>Tarea 3</td>
+                                        <td class="td-nota td-nota-roja">3.8</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="td-fecha">23:59 17/09/17</td>
+                                        <td>Tarea 2</td>
+                                        <td class="td-nota">5.7</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="td-fecha">12:15 20/08/17</td>
+                                        <td>Tarea 1</td>
+                                        <td class="td-nota">6.5</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    </html>
+        

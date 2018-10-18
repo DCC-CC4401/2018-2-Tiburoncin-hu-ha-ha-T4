@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="css/bootstrap.min.css"/>
+        <link rel="stylesheet" href="css/coeval.css"/>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+        <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="js/coeval.js"></script>
+        <title>Login - Sistema de Coevaluaciones DCC</title>
+    </head>
+    <body>
+        <!-- Barra superior -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-5 py-3">
+            <a class="navbar-brand" href="#">Sistema de Coevaluaciones DCC</a>
+            <!-- Al achicar la pantalla, el menú se oculta y se vuelve desplegable mediante este botón. -->
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon">
+                    <i class="fa fa-navicon"></i>
+                </span>
+            </button>
+        </nav>
+        <!-- FIN Barra superior -->
+
+        <!-- Cuerpo -->
+        <div class="container text-center"> <!-- Contenedor responsivo, se adapta a la pantalla con puntos de quiebre. -->
+            <form class="form-signin">
+                <h1 class="mt-5 mb-3">Bienvenid@</h1>
+                <h3 class="font-weight-normal mb-3">Inicia sesión para acceder</h3>
+                <p class="mb-2">Ingresa con tu RUT y contraseña</p>
+                <label for="inputUser" class="sr-only">RUT</label>
+                <input type="email" id="inputUser" class="form-control" placeholder="RUT" required autofocus>
+                <label for="inputPassword" class="sr-only">Contraseña</label>
+                <input type="password" id="inputPassword" class="form-control" placeholder="Contraseña" required>
+                <button class="btn btn-lg btn-primary-custom px-5 mt-3" type="submit">Ingresar</button>
+                <p class="mt-4 text-muted small">¿No has recibido tu contraseña?<br>¡Contacta a tu profesor/administrador!</p>
+            </form>
+        </div>
+    </body>
+    </html>
+        

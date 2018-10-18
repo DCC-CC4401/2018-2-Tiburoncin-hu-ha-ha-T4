@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="css/bootstrap.min.css"/>
+        <link rel="stylesheet" href="css/coeval.css"/>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+        <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="js/coeval.js"></script>
+        <title>Tarea 1 - Sistema de Coevaluaciones DCC</title>
+    </head>
+    <body>
+        <!-- Barra superior -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-5 py-3">
+            <a class="navbar-brand" href="#">Sistema de Coevaluaciones DCC</a>
+            <!-- Al achicar la pantalla, el menú se oculta y se vuelve desplegable mediante este botón. -->
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon">
+                    <i class="fa fa-navicon"></i>
+                </span>
+            </button>
+
+            <!-- Menú superior-derecha -->
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ml-auto">
+                    <form class="nav-link form-inline my-2 my-lg-0">
+                        <input class="form-control" type="search" placeholder="Buscar alumno..." aria-label="Buscar alumno">
+                    </form>
+                    <li class="divider-vertical"></li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Juanito Pérez</a>
+                    </li>
+                    <li class="divider-vertical"></li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Cerrar Sesión</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <!-- FIN Barra superior -->
+
+        <!-- Cuerpo -->
+        <div class="container"> <!-- Contenedor responsivo, se adapta a la pantalla con puntos de quiebre. -->
+
+            <h3 class="d-inline-block page-title">Ficha de Coevaluación</h3>
+            <hr/>
+            <!-- Contenido -->
+            <div class="row mb-3">
+
+                <!-- Información -->
+                <div class="col-md-4 mb-3">
+                    <h4 class="d-inline-block mt-1">Información</h4>
+                    <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">Título</h6>
+                    <span>Tarea 1</span>
+                    <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">Curso</h6>
+                    <span>CC4401 Ingeniería de Software I 2018, Primavera</span>
+                    <div class="row">
+                        <div class="col-6">
+                            <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">Fecha de inicio</h6>
+                            <span>03:53 20/10/18
+                                <a href="#" title="Editar fecha de inicio"><img class="clickable-icon mb-1" src="icon/edit-icon.png" alt="Editar fecha de inicio" width="13" height="13"></a>
+                            </span>
+                        </div>
+                        <div class="col-6">
+                            <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">Fecha límite</h6>
+                            <span>23:59 27/10/18
+                                <a href="#" title="Editar fecha límite"><img class="clickable-icon mb-1" src="icon/edit-icon.png" alt="Editar fecha límite" width="13" height="13"></a>
+                            </span>
+                        </div>
+                    </div>
+                    <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">Estado</h6>
+                    <span>Publicada</span>
+                    <button type="button" class="btn btn-primary-custom d-block mt-3"><img class="clickable-icon export-icon" src="icon/export-icon.png" alt="Exportar resultados" width="28" height="28">
+                        Exportar resultados</button>
+                </div>
+                <!-- FIN Información -->
+
+                <!-- Tabla de alumnos que no han contestado -->
+                <div class="col-md-4">
+                    <h4 class="d-inline-block mt-1">Pendientes</h4>
+                    <a href="#" class="small ml-1" title="Enviar recordatorio por correo"><img class="clickable-icon reminder-icon mb-2" src="icon/reminder-icon.png" alt="Enviar recordatorio por correo" width="28" height="28"></a>
+
+                    <div class="table-wrap table-responsive my-1">
+                        <table class="table table-alumnos-coeval table-striped table-hover mb-0">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>
+                                        <form>
+                                            <input class="form-control" type="search" placeholder="Buscar alumno..." aria-label="Buscar alumno">
+                                        </form>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>Estudiante 1</td></tr>
+                                <tr><td>Estudiante 2</td></tr>
+                                <tr><td>Estudiante 3</td></tr>
+                                <tr><td>Estudiante 5</td></tr>
+                                <tr><td>Estudiante 6</td></tr>
+                                <tr><td>Estudiante 8</td></tr>
+                                <tr><td>Estudiante 9</td></tr>
+                                <tr><td>Estudiante 10</td></tr>
+                                <tr><td>Estudiante 11</td></tr>
+                                <tr><td>Estudiante 13</td></tr>
+                                <tr><td>Estudiante 14</td></tr>
+                                <tr><td>Estudiante 15</td></tr>
+                                <tr><td>Estudiante 16</td></tr>
+                                <tr><td>Estudiante 17</td></tr>
+                                <tr><td>Estudiante 18</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- FIN Tabla de alumnos que no han respondido -->
+
+                <!-- Tabla de alumnos que ya respondieron -->
+                <div class="col-md-4">
+                    <h4 class="d-inline-block mt-1">Contestados</h4>
+
+                    <div class="table-wrap table-responsive my-1">
+                        <table class="table table-alumnos-coeval table-striped table-hover mb-0">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>
+                                        <form>
+                                            <input class="form-control" type="search" placeholder="Buscar alumno..." aria-label="Buscar alumno">
+                                        </form>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>Estudiante 4</td></tr>
+                                <tr class="active" onclick="jumpTo('detalle-coeval');"><td>Estudiante 7 (clickeable)</td></tr>
+                                <tr><td>Estudiante 12</td></tr>
+                                <tr><td>Estudiante 19</td></tr>
+                                <tr><td>Estudiante 20</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- FIN Tabla de alumnos que ya respondieron -->
+            </div>
+
+            <h4 class="d-inline-block mt-1 mb-0">Detalle de coevaluación</h4>
+            <h5>Estudiante 7</h5>
+            <hr/>
+            <!-- Detalle de coevaluación contestada -->
+            <div id="detalle-coeval" class="row">
+                <div class="col-10 offset-1">
+                    <div id="accordion" class="w-100">
+                        <div class="card">
+                            <div class="card-header" id="headingOne">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link w-75 d-inline" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                        Nombre compañero 1
+                                    </button>
+                                    <div class="d-inline w-25 py-1 float-right pr-2">
+                                        <p class="text-right mb-0">Promedio: 4.7</p>
+                                    </div>
+                                </h5>
+                            </div>
+
+                            <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+                                <div class="card-body">
+                                    <table class="table table-striped">
+                                        <tr>
+                                            <td><h6>Criterio 1</h6></td>
+                                            <td class="td-nota">7.0</td>
+                                        </tr>
+                                        <tr>
+                                            <td><h6>Criterio 2</h6></td>
+                                            <td class="td-nota">6.0</td>
+                                        </tr>
+                                        <tr>
+                                            <td><h6>Criterio 3</h6></td>
+                                            <td class="td-nota td-nota-roja">1.0</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header" id="headingTwo">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link w-75 d-inline collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                        Nombre compañero 2
+                                    </button>
+                                    <div class="d-inline w-25 py-1 float-right pr-2">
+                                        <p class="text-right mb-0">Promedio: 5.3</p>
+                                    </div>
+                                </h5>
+                            </div>
+                            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+                                <div class="card-body">
+                                    <table class="table table-striped">
+                                        <tr>
+                                            <td><h6>Criterio 1</h6></td>
+                                            <td class="td-nota">5.0</td>
+                                        </tr>
+                                        <tr>
+                                            <td><h6>Criterio 2</h6></td>
+                                            <td class="td-nota">6.0</td>
+                                        </tr>
+                                        <tr>
+                                            <td><h6>Criterio 3</h6></td>
+                                            <td class="td-nota">5.0</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header" id="headingThree">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link w-75 d-inline collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                        Nombre compañero 3
+                                    </button>
+                                    <div class="d-inline w-25 py-1 float-right pr-2">
+                                        <p class="text-right mb-0">Promedio: 5.0</p>
+                                    </div>
+                                </h5>
+                            </div>
+                            <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
+                                <div class="card-body">
+                                    <table class="table table-striped">
+                                        <tr>
+                                            <td><h6>Criterio 1</h6></td>
+                                            <td class="td-nota td-nota-roja">3.0</td>
+                                        </tr>
+                                        <tr>
+                                            <td><h6>Criterio 2</h6></td>
+                                            <td class="td-nota">6.0</td>
+                                        </tr>
+                                        <tr>
+                                            <td><h6>Criterio 3</h6></td>
+                                            <td class="td-nota">6.0</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    </html>
+        
