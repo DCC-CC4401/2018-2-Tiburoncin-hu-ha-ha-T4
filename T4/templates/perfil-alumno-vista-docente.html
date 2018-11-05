@@ -2,12 +2,12 @@
     <html lang="es">
     <head>
         <meta charset="UTF-8">
-        <link rel="stylesheet" href="css/bootstrap.min.css"/>
-        <link rel="stylesheet" href="css/coeval.css"/>
+        <link rel="stylesheet" href="../../css/bootstrap.min.css"/>
+        <link rel="stylesheet" href="../../css/coeval.css"/>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
         <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
-        <script src="js/bootstrap.min.js"></script>
-        <script src="js/coeval.js"></script>
+        <script src="../../js/bootstrap.min.js"></script>
+        <script src="../../js/coeval.js"></script>
         <title>Juanito Pérez - Sistema de Coevaluaciones DCC</title>
     </head>
     <body>
@@ -24,6 +24,9 @@
             <!-- Menú superior-derecha -->
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav ml-auto">
+                    <form class="nav-link form-inline my-2 my-lg-0">
+                        <input class="form-control" type="search" placeholder="Buscar alumno..." aria-label="Buscar alumno">
+                    </form>
                     <li class="divider-vertical"></li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Juanito Pérez</a>
@@ -47,21 +50,19 @@
 
                 <!-- Perfil -->
                 <div class="col-md-3 mb-3">
-                    <h4 class="d-inline-block mt-1">Tu Perfil</h4>
+                    <h4 class="d-inline-block mt-1">Perfil</h4>
                     <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">Nombre</h6>
-                    <span>Juanito Juan Pérez Pereira</span>
+                    <span>Jane Jenny Doe Smith</span>
                     <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">RUT</h6>
-                    <span>12.345.678-9</span>
+                    <span>19.876.543-2</span>
                     <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">Correo Electrónico</h6>
-                    <span>lorem@ipsum.com</span>
-                    <button type="button" id="change-pass-btn" class="btn btn-secondary mt-3 d-block" onclick="changePass()">Cambiar contraseña</button>
-                    <span class="small">(clickeable)</span>
+                    <span>ipsum@lorem.com</span>
                 </div>
                 <!-- FIN Perfil -->
 
                 <!-- Tabla de cursos -->
                 <div class="col-md-4 mb-3">
-                    <h4 class="d-inline-block mt-1">Tus Cursos</h4>
+                    <h4 class="d-inline-block mt-1">Cursos</h4>
 
                     <div class="table-wrap table-responsive my-1">
                         <table class="table table-cursos-perfil table-striped table-hover mb-0">
@@ -70,31 +71,36 @@
                                 <tr>
                                     <th>Curso</th>
                                     <th class="th-semestre">Sem</th>
+                                    <th class="th-rol"></th>
                                 </tr>
                             </thead>
                             <!-- Cuerpo de tabla (Table Data) -->
                             <tbody>
-                                <tr id="row-btn" onclick="showNotas()">
-                                    <td class="td-curso-full">
-                                        <div class="cargos cargos-alumno tooltip-custom">
-                                            <span class="tooltiptext"></span>
-                                        </div>
-                                        <span class="curso-nombre">Proyecto de Software (clickeable)</span>
-                                        <br>
-                                        <span class="curso-codigo">CC5402-1</span>
-                                    </td>
-                                    <td>2018-2</td>
-                                </tr>
                                 <tr>
                                     <td class="td-curso-full">
                                         <div class="cargos cargos-alumno tooltip-custom">
                                             <span class="tooltiptext"></span>
                                         </div>
-                                        <span class="curso-nombre">Ingeniería de Software II</span>
+                                        <span class="curso-nombre">Proyecto de Software</span>
+                                        <br>
+                                        <span class="curso-codigo">CC5402-1</span>
+                                    </td>
+                                    <td>2018-2</td>
+                                    <td></td>
+                                </tr>
+                                <tr class="tr-docente" id="row-btn" onclick="showNotas()">
+                                    <td class="td-curso-full">
+                                        <div class="cargos cargos-alumno tooltip-custom">
+                                            <span class="tooltiptext"></span>
+                                        </div>
+                                        <span class="curso-nombre">Ingeniería de Software (clickeable)</span>
                                         <br>
                                         <span class="curso-codigo">CC5401-1</span>
                                     </td>
                                     <td>2018-1</td>
+                                    <td>
+                                        <div class="cargos cargos-profesor" title="Eres Profesor/a en este ramo"></div>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td class="td-curso-full">
@@ -106,6 +112,7 @@
                                         <span class="curso-codigo">CC4401-1</span>
                                     </td>
                                     <td>2017-2</td>
+                                    <td></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -131,15 +138,15 @@
                                 <input type="password" class="form-control" id="passNewConfirm">
                             </div>
                             <button type="submit" class="btn btn-primary-custom">Confirmar</button>
-                            <button type="button" class="btn btn-cancel" onclick="cancelPass()">Cancelar</button>
+                            <button type="submit" class="btn btn-cancel" onclick="cancelPass()">Cancelar</button>
                         </form>
                     </div>
                     <div id="notas-placeholder" class="mt-5">
-                        <h5 class="font-weight-normal text-center text-muted">Selecciona un curso para ver tus notas</h5>
+                        <h5 class="font-weight-normal text-center text-muted">Selecciona un curso para ver las notas del alumno/a</h5>
                     </div>
                     <div id="notas-resumen">
-                        <h4 class="d-inline-block mt-1">Tus Notas</h4>
-                        <h5 class="float-right mb-0 mt-2 text-muted" id="currentCurso">CC5402-1, 2018-2</h5>
+                        <h4 class="d-inline-block mt-1">Notas</h4>
+                        <h5 class="float-right mb-0 mt-2 text-muted" id="currentCurso">CC5401-1, 2018-1</h5>
 
                         <div class="table-wrap table-responsive my-1"> <!-- "Envoltura" de la tabla -->
                             <table class="table table-notas-perfil table-striped table-hover mb-0"> <!-- Tabla -->
