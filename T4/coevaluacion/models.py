@@ -117,7 +117,7 @@ class Response(models.Model):
     student = models.ForeignKey(User, on_delete=models.CASCADE)
     coevaluation = models.ForeignKey(CoEvaluation, on_delete=models.CASCADE)
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
-    coevaluated = models.ForeignKey(User, on_delete=models.CASCADE)
+    coevaluated = models.ForeignKey(User, related_name='+', on_delete=models.CASCADE)
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     response = models.CharField(max_length=40)
 

@@ -7,5 +7,6 @@ admin.site.register(UserInCourse)
 admin.site.register(Group)
 admin.site.register(Question)
 admin.site.register(CoEvaluation)
+admin.site.register(Response)
 
 
