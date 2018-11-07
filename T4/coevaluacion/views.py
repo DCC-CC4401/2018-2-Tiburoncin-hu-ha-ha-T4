@@ -6,7 +6,7 @@ def login(request):
 
 
 def home(request):
-    return render(request, 'home-vista-profesor.html')
+    return render(request, 'home-vista-alumno.html')
 
 
 def profile(request):
@@ -18,4 +18,4 @@ def course(request):
 
 
 def coevaluation(request):
-    return render(request, 'coevaluacion-vista-docente.html')
+    return render(request, 'coevaluacion-vista-alumno.html')
