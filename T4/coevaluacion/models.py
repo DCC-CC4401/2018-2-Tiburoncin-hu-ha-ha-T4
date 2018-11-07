@@ -67,6 +67,9 @@ class UserInCourse(models.Model):
     def __str__(self):
         return "%s; %s (%s)" % (self.member, self.course, self.rol)
 
+    class Meta:
+        unique_together = (('member', 'course'),)
+
 
 class Group(models.Model):
     name = models.CharField(max_length=50)
@@ -108,3 +111,16 @@ class CoEvaluation(models.Model):
 
     def __str__(self):
         return "%s (%s)" % (self.coev_identifier, self.course)
+
+
+class Response(models.Model):
+    student = models.ForeignKey(User, on_delete=models.CASCADE)
+    coevaluation = models.ForeignKey(CoEvaluation, on_delete=models.CASCADE)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    coevaluated = models.ForeignKey(User, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    response = models.CharField(max_length=40)
+
+    def __str__(self):
+        return "%s (%s) respondida por %s" % (self.question, self.response, self.student)
+
