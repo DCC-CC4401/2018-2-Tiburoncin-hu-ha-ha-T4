@@ -26,17 +26,18 @@ class User(models.Model):
 
 
 class Course(models.Model):
-    code = models.IntegerField()
+    code = models.CharField(max_length=6)
     section_number = models.IntegerField(default=1)
     year = models.IntegerField(default=datetime.now().year)
 
-    PRIMAVERA = 'Primavera'
-    OTONO = 'Otoño'
+    SPRING = 'Primavera'
+    FALL = 'Otoño'
     SEMESTER = (
-        (PRIMAVERA, PRIMAVERA),
-        (OTONO, OTONO),
+        (SPRING, 'Primavera'),
+        (FALL, 'Otoño'),
     )
     semester = models.CharField(max_length=9, choices=SEMESTER)
+    date = models.DateTimeField(default=datetime.now)
 
     def __str__(self):
         return "%s-%s, %s %s" % (self.code, self.section_number,
@@ -44,10 +45,11 @@ class Course(models.Model):
 
     class Meta:
         unique_together = (('code', 'section_number', 'year', 'semester'),)
+        ordering = ['-date']
 
 
 class NamesPerCode(models.Model):
-    code = models.IntegerField()
+    code = models.CharField(max_length=6)
     name = models.CharField(max_length=40)
 
     def __str__(self):
@@ -94,6 +96,7 @@ class UserInCourse(models.Model):
 
     class Meta:
         unique_together = (('member', 'course'),)
+        ordering = ['-active']  # first the actives
 
 
 class Group(models.Model):
