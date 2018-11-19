@@ -1,8 +1,10 @@
 from django.db import models
 from datetime import datetime
+from django.contrib.auth.models import User as Auth_User
 
 
 class User(models.Model):
+    user = models.OneToOneField(Auth_User, on_delete=models.CASCADE)
     email = models.CharField(max_length=50)
     first_name = models.CharField(max_length=40)
     last_name = models.CharField(max_length=40)

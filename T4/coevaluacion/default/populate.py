@@ -1,4 +1,5 @@
 from ..models import *
+from django.contrib.auth.models import User as Auth_User
 from datetime import datetime, time, date
 from django.utils import timezone
 
@@ -18,6 +19,8 @@ In[]: populate()
 
 
 def populate():
+    admin_user = Auth_User.objects.create_superuser(username='admin', password='tiburoncinadmin', email='admin@admin.cl')
+    admin_user.save()
     users = create_user()
     courses = create_course()
     _ = names_per_code()
@@ -36,7 +39,9 @@ def create_user():
           ["22.23{}.111-1".format(i) for i in range(0, 5)]
     table = []
     for f, l, e, p, u, r in zip(first_names, last_names, email, password, user_type, rut):
+        user = Auth_User.objects.create_user(username=r, password=p)
         tmp = User()
+        tmp.user = user
         tmp.email = e
         tmp.first_name = f
         tmp.last_name = l
