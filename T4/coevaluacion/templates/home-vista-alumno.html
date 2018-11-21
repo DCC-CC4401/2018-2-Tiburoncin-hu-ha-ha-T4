@@ -167,7 +167,7 @@
                         {% for coev in coevs %}
                         <tr>
                             <td class="td-fecha">{{ coev.init_date }}</td>
-                            <td>{{ coev.name }}</td>
+                            <td><a href="{% url 'coevaluation' coev.id %}">{{ coev.name }}</a></td>
                             <td class="td-curso-full">
                                 <div class="cargos cargos-alumno tooltip-custom">
                                     <span class="tooltiptext"></span>
@@ -257,7 +257,7 @@
                                 <br>
                                 <span class="curso-codigo">{{ uic.course.code.code }}-{{ uic.course.section_number }}</span>
                             </td>
-                            <td>{{ uic.course.year }}-1{{ uic.course.semester }}</td>
+                            <td>{{ uic.course.year }}-{{ uic.course.semester }}</td>
                         </tr>
                     {% endfor %}
 
