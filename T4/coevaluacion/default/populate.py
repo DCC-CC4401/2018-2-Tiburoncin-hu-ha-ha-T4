@@ -23,10 +23,12 @@ def populate():
     admin_user.save()
     users = create_user()
     codes = names_per_code()
-    courses = create_course()
+    courses = create_course(codes)
     _ = question()
-    _ = user_in_course(courses, users)
-    _ = coevaluation(courses)
+    usr_course = user_in_course(courses, users)
+    groups = group(usr_course)
+    coevs = coevaluation(courses)
+    ans_coev = answer_co_evaluation(groups, coevs)
 
 
 # user
@@ -64,6 +66,7 @@ def create_datetime(dtime, htime):
 # course
 code = [4000 + i for i in range(0, 7)] + [4001, 4002, 4004]
 
+
 # code names
 def names_per_code():
     names = ["curso" + str(i) for i in range(0, 7)]
@@ -77,17 +80,24 @@ def names_per_code():
     return table
 
 
-def create_course():
+def create_course(names_code):
     section = [1] * 7 + [2] * 3
     year = [2018] * 10
-    semester = ["Primavera"] * 2 + ["Otoño"] * 4 + ["Primavera"] * 3 + ["Otoño"]
+    semester = ["2"] * 2 + ["1"] * 4 + ["2"] * 3 + ["1"]
     days = [[i, 10, 23] for i in [1, 4, 4, 5, 7, 7, 7, 7, 10, 11]]
     hours = [[8, i, 11] for i in range(0, 10)]
     date = [create_datetime(days[i], hours[i]) for i in range(0, 10)]
+    code = []
+    for i in range(len(names_code)):
+        code.append(names_code[i])
+
+    code.append(names_code[2])
+    code.append(names_code[3])
+    code.append(names_code[5])
     table = []
     for c, sec, y, sem, d in zip(code, section, year, semester, date):
         tmp = Course()
-        tmp.code = NamesPerCode.objects.get(code=c)
+        tmp.code = c
         tmp.section_number = sec
         tmp.year = y
         tmp.semester = sem
@@ -98,16 +108,16 @@ def create_course():
 
 
 # code names
-def names_per_code():
-    names = ["curso" + str(i) for i in range(0, 7)]
-    table = []
-    for c, n in zip(code[:7], names):
-        tmp = NamesPerCode()
-        tmp.code = c
-        tmp.name = n
-        table.append(tmp)
-        tmp.save()
-    return table
+# def names_per_code():
+#     names = ["curso" + str(i) for i in range(0, 7)]
+#     table = []
+#     for c, n in zip(code[:7], names):
+#         tmp = NamesPerCode()
+#         tmp.code = c
+#         tmp.name = n
+#         table.append(tmp)
+#         tmp.save()
+#     return table
 
 
 # question
@@ -157,12 +167,12 @@ def user_in_course(table_courses, table_users):
     return table
 
 
-# groups, TODO: not working
+# groups
 def group(table_users_in_course):
     courses = []
     members = []
     for uc in table_users_in_course:
-        if uc.rol is "Estudiante":
+        if uc.rol == "Estudiante":
             courses.append(uc.course)
             members.append(uc.member)
 
@@ -171,19 +181,35 @@ def group(table_users_in_course):
     while i < len(courses):
         c = courses[i]
         j = 0
-        i += 1
-        while courses[i] == c:
+        while i < len(courses) and courses[i] == c:
             name.append("grupo" + str(j))
             j = (j+1) % 3
             i += 1
 
     # generate a duplicated members wo change group, and one who delete
     number_delete = 4
-    number_whos_change = [9, 12]
+    number_whos_change = [9, 12] # i know that these are students
     courses.append(table_users_in_course[9].course)
     members.append(table_users_in_course[12].member)
     courses.append(table_users_in_course[12].course)
     members.append(table_users_in_course[9].member)
+
+    active = [True] * len(courses)
+    active[number_delete] = False
+    active[number_whos_change[0]] = False
+    active[number_whos_change[1]] = False
+
+    table = []
+    for c, m, n, a in zip(courses, members, name, active):
+        tmp = Group()
+        tmp.course = c
+        tmp.member = m
+        tmp.name = n
+        tmp.active = a
+        table.append(tmp)
+        tmp.save()
+    return table
+
 
 def coevaluation(courses):
     table = []
@@ -193,4 +219,18 @@ def coevaluation(courses):
         coev.name = "Coev: " + course.code.name
         table.append(coev)
         coev.save()
+    return table
+
+
+def answer_co_evaluation(groups, co_evaluations):
+    table = []
+    tmp = False
+    for coev in co_evaluations:
+        for data in groups:
+            answer_coev = AnswerCoEvaluation()
+            answer_coev.user = data
+            answer_coev.co_evaluation = coev
+            answer_coev.state = "Pendiente" if tmp else "Respondida"
+            tmp = not tmp
+            answer_coev.save()
     return table
