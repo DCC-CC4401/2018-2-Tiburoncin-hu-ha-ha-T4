@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 
+{% load static %}
 {% block content %}
 
 <div class="container mt-4"> <!-- Contenedor responsivo, se adapta a la pantalla con puntos de quiebre. -->
@@ -53,7 +54,7 @@
                             <td>Pendiente</td>
                             <!-- Ícono de acción (responder) -->
                             <td class="td-icon">
-                                <a href="#" title="Responder coevaluación"><img class="clickable-icon answer-icon wiggle" src="../../icon/answer-icon.png" alt="Responder coevaluación" width="28" height="28"></a>
+                                <a href="#" title="Responder coevaluación"><img class="clickable-icon answer-icon wiggle" src="{% static "/coevaluacion/icon/answer-icon.png" %}" alt="Responder coevaluación" width="28" height="28"></a>
                             </td>
                         </tr>
                         <tr class="tr-pendiente">
@@ -75,7 +76,7 @@
                             </td>
                             <td>Pendiente</td>
                             <td class="td-icon">
-                                <a href="#" title="Responder coevaluación"><img class="clickable-icon answer-icon wiggle" src="../../icon/answer-icon.png" alt="Responder coevaluación" width="28" height="28"></a>
+                                <a href="#" title="Responder coevaluación"><img class="clickable-icon answer-icon wiggle" src="{% static "/coevaluacion/icon/answer-icon.png" %}" alt="Responder coevaluación" width="28" height="28"></a>
                             </td>
                         </tr>
                         <tr>

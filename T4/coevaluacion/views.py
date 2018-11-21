@@ -28,24 +28,26 @@ def login_submit(request):
 @login_required
 def home(request):
     user = User.objects.get(user=request.user)
-    userInCourse = UserInCourse.objects.filter(member=user)
+    user_in_course = UserInCourse.objects.filter(member=user)
     coevs = CoEvaluation.objects.filter(course=0)
-    for uic in userInCourse:
+    for uic in user_in_course:
         coevs = coevs | CoEvaluation.objects.filter(course=uic.course)
-    context = {'user' : user,
-               'userInCourse' : userInCourse,
-               'coevs' : coevs}
+    context = {'user': user,
+               'userInCourse': user_in_course,
+               'coevs': coevs}
 
     return render(request, 'home-vista-alumno.html', context)
+
 
 def user_context(request):
     current_user = User.objects.get(user=request.user)
     context = {'first_name': current_user.first_name,
                'last_name': current_user.last_name,
-               'rut' : current_user.user.username,
-               'mail' : current_user.email}
+               'rut': current_user.user.username,
+               'mail': current_user.email}
 
     return context
+
 
 def logout(request):
     auth_logout(request)
