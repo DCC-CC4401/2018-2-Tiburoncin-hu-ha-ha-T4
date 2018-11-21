@@ -44,11 +44,11 @@ class Course(models.Model):
     section_number = models.IntegerField(default=1)
     year = models.IntegerField(default=datetime.now().year)
 
-    SPRING = 'Primavera'
-    FALL = 'Otoño'
+    SPRING = '2'
+    FALL = '1'
     SEMESTER = (
-        (SPRING, 'Primavera'),
-        (FALL, 'Otoño'),
+        (SPRING, '2'),
+        (FALL, '1'),
     )
     semester = models.CharField(max_length=9, choices=SEMESTER)
     date = models.DateTimeField(default=datetime.now)
@@ -121,6 +121,7 @@ class CoEvaluation(models.Model):
 
     init_date = models.DateTimeField(default=datetime.now)
     end_date = models.DateTimeField(default=datetime.max)
+    publish = models.BooleanField(default=False)
 
     @property
     def open(self):
@@ -130,21 +131,35 @@ class CoEvaluation(models.Model):
         return "%s, %s (%s - %s)" % (self.course, self.name, self.init_date, self.end_date)
 
 
-class UserActionOnCoEvaluation(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+class AnswerCoEvaluation(models.Model):
+    # user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(Group, on_delete=models.CASCADE)
     co_evaluation = models.ForeignKey(CoEvaluation, on_delete=models.CASCADE)
-    date = models.DateTimeField(default=datetime.now)
+    # date = models.DateTimeField(default=datetime.now)
 
-    ANSWER = 'Responde'
-    PUBLISH = 'Publica'
-    ACTION_TYPE = (
-        (ANSWER, ANSWER),
-        (PUBLISH, PUBLISH),
+    ANSWERED = "Respondida"
+    PENDENT = "Pendiente"
+    CLOSED = "Cerrado"
+    PUBLISH = "Publicada"
+
+    STATE_TYPE = (
+        (PENDENT, "Pendiente"),
+        (ANSWERED, "Respondida")
     )
-    action_type = models.CharField(max_length=8, choices=ACTION_TYPE)
+
+    state = models.CharField(max_length=10, choices=STATE_TYPE)
+
+
+    # ANSWER = 'Responde'
+    # PUBLISH = 'Publica'
+    # ACTION_TYPE = (
+    #     (ANSWER, ANSWER),
+    #     (PUBLISH, PUBLISH),
+    # )
+    # action_type = models.CharField(max_length=8, choices=ACTION_TYPE)
 
     def __str__(self):
-        return "%s: %s %s on %s" % (self.user, self.action_type, self.co_evaluation, self.date)
+        return "%s: %s (%s)" % (self.user, self.co_evaluation, self.state)
 
 
 class AnswerQuestion(models.Model):

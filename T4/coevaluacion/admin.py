@@ -4,7 +4,7 @@ from .models import *
 admin.site.register(User)
 admin.site.register(Course)
 admin.site.register(NamesPerCode)
-admin.site.register(UserActionOnCoEvaluation)
+admin.site.register(AnswerCoEvaluation)
 admin.site.register(AnswerQuestion)
 admin.site.register(QuestionsInCoEvaluation)
 admin.site.register(UserInCourse)
