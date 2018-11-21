@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models.query import QuerySet
 from django.shortcuts import render, redirect
 
-from coevaluacion.models import User, UserInCourse, CoEvaluation
+from coevaluacion.models import User, UserInCourse, CoEvaluation, Course
 
 
 def login(request):
@@ -41,10 +41,12 @@ def home(request):
 
 def user_context(request):
     current_user = User.objects.get(user=request.user)
-    context = {'first_name': current_user.first_name,
-               'last_name': current_user.last_name,
-               'rut': current_user.user.username,
-               'mail': current_user.email}
+    context = {
+        'first_name': current_user.first_name,
+        'last_name': current_user.last_name,
+        'rut': current_user.user.username,
+        'mail': current_user.email
+    }
 
     return context
 
@@ -55,13 +57,19 @@ def logout(request):
 
 
 def profile(request):
-    return render(request, 'perfil-vista-dueno.html')
+    user = User.objects.get(user=request.user)
+    context = {'user': user}
+    return render(request, 'perfil-vista-dueno.html', context)
 
 
-def course(request):
+def course(request, year, semester, code, section):
     return render(request, 'curso-vista-docente.html')
 
+
 @login_required
-def coevaluation(request, coev_id):
-    context = {'id' : 2}
+def peer_assessment(request, year, semester, code, section, id):
+    user = User.objects.get(user=request.user)
+    context = {
+        'user': user,
+        'id': id}
     return render(request, 'coevaluacion-vista-alumno.html', context)

@@ -149,7 +149,6 @@ class AnswerCoEvaluation(models.Model):
 
     state = models.CharField(max_length=10, choices=STATE_TYPE)
 
-
     # ANSWER = 'Responde'
     # PUBLISH = 'Publica'
     # ACTION_TYPE = (

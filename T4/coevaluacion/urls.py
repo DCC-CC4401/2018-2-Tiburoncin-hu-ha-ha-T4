@@ -8,7 +8,8 @@ urlpatterns = [
     path('login/submit/', views.login_submit, name='login_submit'),
     path('logout/', views.logout, name='logout'),
     path('', views.home, name='home'),
-    path('profile/', views.profile, name='profile'),
-    path('course/', views.course, name='course'),
-    path('coevaluation/<int:coev_id>', views.coevaluation, name='coevaluation'),
+    path('profile/<str:rut>', views.profile, name='profile'),
+    path('<int:year>/<int:semester>/<str:code>/<int:section>', views.course, name='course'),
+    path('<int:year>/<int:semester>/<str:code>/<int:section>/peer_assessment/<int:id>',
+         views.peer_assessment, name='peer_assessment'),
 ]
