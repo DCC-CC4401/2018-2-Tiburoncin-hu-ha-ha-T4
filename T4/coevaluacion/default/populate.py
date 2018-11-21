@@ -22,10 +22,11 @@ def populate():
     admin_user = Auth_User.objects.create_superuser(username='admin', password='tiburoncinadmin', email='admin@admin.cl')
     admin_user.save()
     users = create_user()
+    codes = names_per_code()
     courses = create_course()
-    _ = names_per_code()
     _ = question()
     _ = user_in_course(courses, users)
+    _ = coevaluation(courses)
 
 
 # user
@@ -63,6 +64,18 @@ def create_datetime(dtime, htime):
 # course
 code = [4000 + i for i in range(0, 7)] + [4001, 4002, 4004]
 
+# code names
+def names_per_code():
+    names = ["curso" + str(i) for i in range(0, 7)]
+    table = []
+    for c, n in zip(code[:7], names):
+        tmp = NamesPerCode()
+        tmp.code = c
+        tmp.name = n
+        table.append(tmp)
+        tmp.save()
+    return table
+
 
 def create_course():
     section = [1] * 7 + [2] * 3
@@ -74,7 +87,7 @@ def create_course():
     table = []
     for c, sec, y, sem, d in zip(code, section, year, semester, date):
         tmp = Course()
-        tmp.code = c
+        tmp.code = NamesPerCode.objects.get(code=c)
         tmp.section_number = sec
         tmp.year = y
         tmp.semester = sem
@@ -122,7 +135,7 @@ def user_in_course(table_courses, table_users):
     for i in [0, 3, 6, 4, 9, 8]:
         k = 0
         while k < 7:
-            if table_users[j].not_admin() and table_users[j] not in members:
+            if table_users[j].not_admin():
                 members.append(table_users[j])
                 courses.append(table_courses[i])
                 k += 1
@@ -172,9 +185,12 @@ def group(table_users_in_course):
     courses.append(table_users_in_course[12].course)
     members.append(table_users_in_course[9].member)
 
-
-
-
-
-
-
+def coevaluation(courses):
+    table = []
+    for course in courses:
+        coev = CoEvaluation()
+        coev.course = course
+        coev.name = "Coev: " + course.code.name
+        table.append(coev)
+        coev.save()
+    return table

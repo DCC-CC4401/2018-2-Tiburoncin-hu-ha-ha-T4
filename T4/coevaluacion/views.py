@@ -2,9 +2,10 @@ from django.contrib import messages
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
+from django.db.models.query import QuerySet
 from django.shortcuts import render, redirect
 
-from coevaluacion.models import User
+from coevaluacion.models import User, UserInCourse, CoEvaluation
 
 
 def login(request):
@@ -28,7 +29,14 @@ def login_submit(request):
 
 @login_required
 def home(request):
-    context = user_context(request)
+    user = User.objects.get(user=request.user)
+    userInCourse = UserInCourse.objects.filter(member=user)
+    coevs = CoEvaluation.objects.filter(course=0)
+    for uic in userInCourse:
+        coevs = coevs | CoEvaluation.objects.filter(course=uic.course)
+    context = {'user' : user,
+               'userInCourse' : userInCourse,
+               'coevs' : coevs}
 
     return render(request, 'home-vista-alumno.html', context)
 

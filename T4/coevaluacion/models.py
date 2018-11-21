@@ -27,8 +27,20 @@ class User(models.Model):
         return self.user_type == self.NATURAL_PERSON
 
 
-class Course(models.Model):
+class NamesPerCode(models.Model):
     code = models.CharField(max_length=6)
+    name = models.CharField(max_length=40)
+
+    def __str__(self):
+        return "%s: %s" % (self.name, self.code)
+
+    class Meta:
+        unique_together = (('code', 'name'),)
+
+
+class Course(models.Model):
+    code = models.ForeignKey(NamesPerCode, on_delete=models.CASCADE)
+    # code = models.CharField(max_length=6)
     section_number = models.IntegerField(default=1)
     year = models.IntegerField(default=datetime.now().year)
 
@@ -48,17 +60,6 @@ class Course(models.Model):
     class Meta:
         unique_together = (('code', 'section_number', 'year', 'semester'),)
         ordering = ['-date']
-
-
-class NamesPerCode(models.Model):
-    code = models.CharField(max_length=6)
-    name = models.CharField(max_length=40)
-
-    def __str__(self):
-        return "%s: %s" % (self.name, self.code)
-
-    class Meta:
-        unique_together = (('code', 'name'),)
 
 
 class Question(models.Model):
@@ -117,7 +118,6 @@ class Group(models.Model):
 class CoEvaluation(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     name = models.CharField(max_length=40, default='Co-evaluacion')
-    id = models.IntegerField(primary_key=True)
 
     init_date = models.DateTimeField(default=datetime.now)
     end_date = models.DateTimeField(default=datetime.max)
