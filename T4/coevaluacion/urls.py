@@ -10,5 +10,5 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('profile/', views.profile, name='profile'),
     path('course/', views.course, name='course'),
-    path('coevaluation/', views.coevaluation, name='coevaluation'),
+    path('coevaluation/<int:coev_id>', views.coevaluation, name='coevaluation'),
 ]

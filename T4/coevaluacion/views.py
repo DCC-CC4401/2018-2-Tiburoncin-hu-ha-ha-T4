@@ -59,6 +59,7 @@ def profile(request):
 def course(request):
     return render(request, 'curso-vista-docente.html')
 
-
-def coevaluation(request):
-    return render(request, 'coevaluacion-vista-alumno.html')
+@login_required
+def coevaluation(request, coev_id):
+    context = {'id' : 2}
+    return render(request, 'coevaluacion-vista-alumno.html', context)
