@@ -24,8 +24,6 @@ def login_submit(request):
         messages.warning(request, 'La contraseña ingresada no es correcta o el usuario no existe')
         return redirect('/login')
 
-    return render(request, 'login.html')
-
 
 @login_required
 def home(request):
