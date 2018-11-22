@@ -44,13 +44,13 @@ class Course(models.Model):
     section_number = models.IntegerField(default=1)
     year = models.IntegerField(default=datetime.now().year)
 
-    SPRING = '2'
-    FALL = '1'
+    SPRING = 2
+    FALL = 1
     SEMESTER = (
-        (SPRING, '2'),
-        (FALL, '1'),
+        (SPRING, "Primavera"),
+        (FALL, "Otoño"),
     )
-    semester = models.CharField(max_length=9, choices=SEMESTER)
+    semester = models.IntegerField(choices=SEMESTER)
     date = models.DateTimeField(default=datetime.now)
 
     def __str__(self):
