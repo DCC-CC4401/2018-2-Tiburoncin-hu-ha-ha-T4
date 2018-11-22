@@ -13,11 +13,11 @@
         <div class="col-md-3 mb-3">
             <h4 class="d-inline-block mt-1">Tu Perfil</h4>
             <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">Nombre</h6>
-            <span>Juanito Juan Pérez Pereira</span>
+            <span>{{ user.first_name }} {{ user.last_name }}</span>
             <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">RUT</h6>
-            <span>12.345.678-9</span>
+            <span>{{ user.rut }}</span>
             <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">Correo Electrónico</h6>
-            <span>lorem@ipsum.com</span>
+            <span>{{ user.email }}</span>
             <button type="button" id="change-pass-btn" class="btn btn-primary mt-3 d-block" onclick="changePass()">Cambiar contraseña</button>
         </div>
         <!-- FIN Perfil -->
