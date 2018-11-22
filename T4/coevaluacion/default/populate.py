@@ -28,7 +28,7 @@ def populate():
     usr_course = user_in_course(courses, users)
     groups = group(usr_course)
     coevs = coevaluation(courses)
-    ans_coev = answer_co_evaluation(groups, coevs)
+    # ans_coev = answer_co_evaluation(groups, coevs)
 
 
 # user
@@ -222,15 +222,15 @@ def coevaluation(courses):
     return table
 
 
-def answer_co_evaluation(groups, co_evaluations):
-    table = []
-    tmp = False
-    for coev in co_evaluations:
-        for data in groups:
-            answer_coev = AnswerCoEvaluation()
-            answer_coev.user = data
-            answer_coev.co_evaluation = coev
-            answer_coev.state = "Pendiente" if tmp else "Respondida"
-            tmp = not tmp
-            answer_coev.save()
-    return table
+# TODO: NOT WORKING
+# def answer_co_evaluation(groups, co_evaluations):
+#     tmp = False
+#     for coev in co_evaluations:
+#         for data in groups:
+#             answer_coev = AnswerCoEvaluation()
+#             answer_coev.user = data
+#             answer_coev.co_evaluation = coev
+#             answer_coev.state = "Pendiente" if tmp else "Respondida"
+#             tmp = not tmp
+#             answer_coev.save()
+#     return table
