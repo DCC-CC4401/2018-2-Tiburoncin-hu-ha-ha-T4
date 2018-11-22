@@ -13,7 +13,6 @@ def login(request):
 
 
 def login_submit(request):
-
     username = request.POST['rut']
     password = request.POST['password']
     user = authenticate(request, username=username, password=password)
@@ -45,29 +44,45 @@ def home(request):
     return render(request, 'home-vista-alumno.html', context)
 
 
-def user_context(request):
-    current_user = User.objects.get(user=request.user)
-    context = {
-        'first_name': current_user.first_name,
-        'last_name': current_user.last_name,
-        'rut': current_user.user.username,
-        'mail': current_user.email
-    }
-
-    return context
-
-
+@login_required
 def logout(request):
     auth_logout(request)
     return redirect('/')
 
 
+@login_required
 def profile(request, rut):
-    user = User.objects.get(user=request.user)
-    context = {'user': user}
-    return render(request, 'perfil-alumno-vista-docente.html', context)
+    profile_user = User.objects.get(rut=rut)
+    logged_user = User.objects.get(user=request.user)
+
+    owner = (logged_user.rut == rut)
+
+    owner_courses = UserInCourse.objects.filter(member=profile_user)
+    logged_courses = UserInCourse.objects.filter(member=logged_user)
+
+    courses = []
+    for owner_course in owner_courses:
+
+        visitor_rol = logged_courses.filter(course=owner_course.course)
+        visitor_rol = visitor_rol[0].rol if visitor_rol else ""
+
+        if (owner_course.course.id,) in list(logged_courses.values_list("course")) and visitor_rol != "Estudiante":
+            courses.append({'course': owner_course, 'visitor_rol': visitor_rol})
+        else:
+            courses.append({'course': owner_course, 'visitor_rol': None})
+
+    courses = sorted(courses, key=lambda x: (x['course'].course.year, x['course'].course.semester), reverse=True)
+
+    context = {
+        'profile_user': profile_user,
+        'logged_user': logged_user,
+        'owner': owner,
+        'courses': courses
+    }
+    return render(request, 'profile.html', context)
 
 
+@login_required
 def course(request, year, semester, code, section):
     return render(request, 'curso-vista-docente.html')
 

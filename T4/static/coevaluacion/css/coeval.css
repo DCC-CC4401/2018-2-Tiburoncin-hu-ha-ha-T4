@@ -441,7 +441,9 @@ button:active > .clickable-icon {
 .cargos-ayudante { background-image: url(../icon/cargos-ayudante.png) }
 .cargos-profesor { background-image: url(../icon/cargos-profesor.png) }
 
-
+.fright {
+	float: right;
+}
 
 /*--------------------------------------------
   Animations
