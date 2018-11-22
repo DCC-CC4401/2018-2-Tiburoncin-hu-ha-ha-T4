@@ -5,11 +5,12 @@ from django.contrib.auth.decorators import login_required
 from django.db.models.query import QuerySet
 from django.shortcuts import render, redirect
 
-from coevaluacion.models import User, UserInCourse, CoEvaluation
+from .models import User, UserInCourse, CoEvaluation
 
 
 def login(request):
     return render(request, 'login.html')
+
 
 def login_submit(request):
 
