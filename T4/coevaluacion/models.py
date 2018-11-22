@@ -59,7 +59,6 @@ class Course(models.Model):
 
     class Meta:
         unique_together = (('code', 'section_number', 'year', 'semester'),)
-        ordering = ['-date']
 
 
 class Question(models.Model):
@@ -99,7 +98,6 @@ class UserInCourse(models.Model):
 
     class Meta:
         unique_together = (('member', 'course'),)
-        ordering = ['-active']  # first the actives
 
 
 class Group(models.Model):
