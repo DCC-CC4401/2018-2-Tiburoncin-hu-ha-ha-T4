@@ -6,51 +6,89 @@ Here we define some custom queries to be used in our application
 '''
 
 
-def course_name(course: Course, names: QuerySet):
-    match = names.filter(code=course.code)
-    if len(match):
-        raise ValueError("A code has more than 1 name")
-    return names.filter(code=course.code)[0].name
+def mean_point_per_question(user: User, question: QuestionsInCoEvaluation):
+    """
+    calculate the mean points obtained by a user in an specific question
+
+    :param user: user instance
+    :param question: question instance
+    :return: the mean points (a float)
+    """
+    ans_quest = AnswerQuestion.objects.filter(question=question, user_related=user)
+    t = 0.0
+    for ans in ans_quest:
+        t += int(ans.response)
+    t /= ans_quest.count()
+    return t
 
 
-def results_coev(coev: CoEvaluation, user: User, AnswerCoEvaluation: QuerySet):
-    questions = QuestionsInCoEvaluation.objects.filter(co_evaluation=coev, weight__gt=0)
-    r = 0.0
-    n = len(questions)
-    for q in questions:
-        members = AnswerQuestion.objects.filter(user_related=user, question=q.question)
-        m = len(members)
-        l = 0.0
-        for m in members:
-            l += m.response * q.weight * 1.0
-        l /= m
-        r += l
+def grade_in_coev(user: User, coev: CoEvaluation):
+    """
+    query to get the resulting grade of a user ("Estudiante") related
+    to a specific coevaluation
 
-    return r/n
+    :param user: user instance
+    :param coev: qcoevaluation instance
+    :return: the total grade (a float)
+    """
+    quests = QuestionsInCoEvaluation.objects.filter(co_evaluation=coev)
+    s = 0
+    w_total = 0
+    for q in quests:
+        if q.question.question_type == "Grade":
+            t = mean_point_per_question(user, q)
+            s += t * q.weight
+            w_total += q.weight
+    return s/w_total
 
 
+def status_coev(user_in_course: UserInCourse, coev: CoEvaluation):
+    """
+    compute the relative status of a coevaluation for an specific user,
+    if the user is an "Estudiante" in the course of the coevaluation then
+    the status can be ("Respondida", "Pendiente",  "Publicada"  or "Cerrada")
+    if the user is part of the "equipo docente" then the status can be
+    ("Abierta", "Cerrada", "Publicada")
 
-# def has_answered(co_evaluation: CoEvaluation):
-#     ruts = UserActionOnCoEvaluation.objects.filter(action_type='Responde',
-#                                                    co_evaluation=co_evaluation).values_list('user')
-#     return User.objects.filter(rut__in=ruts)
-#
-#
-# def has_not_answered(co_evaluation: CoEvaluation):
-#
-#     #  get all the students in the course (their RUT)
-#     students = UserInCourse.objects.filter(course=co_evaluation.course,
-#                                            rol='Estudiante').values_list('member')
-#
-#     #  get all the users who has answered the coevaluation
-#     users = UserActionOnCoEvaluation.objects.filter(action_type='Responde',
-#                                                     co_evaluation=co_evaluation).values_list('user')
-#
-#     # get the RUT of students who hasn't answered the questions
-#     ruts = students.difference(users)
-#
-#     return User.objects.filter(rut__in=ruts)
+    :param user_in_course: the user instance
+    :param coev: the coevaluation instance
+    :return: the status (a string)
+    """
+    if coev.publish:
+        status = "Publicada"
+    else:
+        if user_in_course.rol == "Estudiante":
+            status = AnswerCoEvaluation.objects.get(user=user_in_course,
+                                                    co_evaluation=coev).state
+            if status == "Pendiente" and not coev.open():
+                status = "Cerrada"
+        else:
+            status = "Abierta" if coev.open() else "Cerrada"
 
+    return status
+
+
+def latest_coev_with_status(user: User):
+    """
+    query to get the last 10 coevaluations related to a user with the respective relative status
+    which can be ("Abierta", "Cerrada", "Publicada", "Respondida", "Pendiente")
+    :param user: the user
+    :return: the clast 10 coevaluations and their relative status
+    """
+    usr_in_crs =UserInCourse.objects.filter(member=user)
+    vals = usr_in_crs.values_list("course")
+    usr_courses = Course.objects.filter(id__in=vals)
+
+    related_coevs = CoEvaluation.objects.filter(course__in=usr_courses)
+    related_coevs = related_coevs.order_by("-end_date")
+    N = 10 if related_coevs.count() > 10 else related_coevs.count()
+    s = []
+    for i in range(N):
+        usr_in_course = UserInCourse.objects.get(course=related_coevs[i].course,
+                                                 member=user)
+        s.append(status_coev(usr_in_course, related_coevs[i]))
+
+    return related_coevs, s
 
 
 
