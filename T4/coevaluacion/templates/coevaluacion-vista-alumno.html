@@ -13,21 +13,27 @@
         <div class="col-md-4 mb-3">
             <h4 class="d-inline-block mt-1">Información</h4>
             <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">Título</h6>
-            <span>Tarea 1</span>
+            <span>{{ ansCoev.co_evaluation.name }}</span>
             <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">Curso</h6>
-            <span>CC4401 Ingeniería de Software I 2018, Primavera</span>
+            <span>{{ ansCoev.co_evaluation.course.code.code }} {{ ansCoev.co_evaluation.course.code.name }} {{ ansCoev.co_evaluation.course.year }},
+                {% if ansCoev.co_evaluation.course.semester == 1 %}
+                    Primavera
+                {% else %}
+                    Otoño
+                {% endif %}
+            </span>
             <div class="row">
                 <div class="col-6">
                     <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">Fecha de inicio</h6>
-                    <span>03:53 20/10/18</span>
+                    <span>{{ ansCoev.co_evaluation.init_date }}</span>
                 </div>
                 <div class="col-6">
                     <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">Fecha límite</h6>
-                    <span>23:59 27/10/18</span>
+                    <span>{{ ansCoev.co_evaluation.end_date }}</span>
                 </div>
             </div>
             <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">Estado</h6>
-            <span>Abierta</span>
+            <span>{{ ansCoev.state }}</span>
         </div>
         <!-- FIN Información -->
 

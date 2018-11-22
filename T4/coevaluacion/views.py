@@ -75,7 +75,8 @@ def course(request, year, semester, code, section):
 @login_required
 def peer_assessment(request, year, semester, code, section, id):
     user = User.objects.get(user=request.user)
+    ansCoev = AnswerCoEvaluation.objects.get(id=id)
     context = {
         'user': user,
-        'id': id}
+        'ansCoev': ansCoev}
     return render(request, 'coevaluacion-vista-alumno.html', context)
