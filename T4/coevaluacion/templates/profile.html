@@ -10,15 +10,18 @@
     <div class="row">
 
         <!-- Perfil -->
-        <div class="col-md-3 mb-3">
+        <div class="col-md-4 mb-3">
             <h4 class="d-inline-block mt-1">Tu Perfil</h4>
             <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">Nombre</h6>
-            <span>{{ user.first_name }} {{ user.last_name }}</span>
+            <span>{{ profile_user.first_name }} {{ user.last_name }}</span>
             <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">RUT</h6>
-            <span>{{ user.rut }}</span>
+            <span>{{ profile_user.rut }}</span>
             <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">Correo Electrónico</h6>
-            <span>{{ user.email }}</span>
-            <button type="button" id="change-pass-btn" class="btn btn-primary mt-3 d-block" onclick="changePass()">Cambiar contraseña</button>
+            <span>{{ profile_user.email }}</span>
+
+            {% if owner %}
+                <button type="button" id="change-pass-btn" class="btn btn-primary mt-3 d-block" onclick="changePass()">Cambiar contraseña</button>
+            {% endif %}
         </div>
         <!-- FIN Perfil -->
 
@@ -32,7 +35,7 @@
                     <thead class="thead-light">
                         <tr>
                             <th>Curso</th>
-                            <th class="th-semestre">Sem</th>
+                            <th class="th-semestre">Semestre</th>
                         </tr>
                     </thead>
                     <!-- Cuerpo de tabla (Table Data) -->
@@ -70,6 +73,23 @@
                             </td>
                             <td>2017-2</td>
                         </tr>
+                        {% for c in courses %}
+                            <tr>
+                                <td class="td-curso-full">
+                                    <div class="cargos cargos-alumno tooltip-custom">
+                                        <span class="tooltiptext"></span>
+                                    </div>
+                                    <span class="curso-nombre">{{ c.course.course.code.name }}</span>
+                                    {% if c.visitor_rol %}
+                                        <span class="cargos cargos-profesor fright"title="Eres Profesor/a en este ramo"></span>
+                                    {% endif %}
+                                    <br>
+                                    <span class="curso-codigo">{{ c.course.course.code.code }}</span>
+                                </td>
+                                <td>{{ c.course.course.year }}-{{ c.course.course.semester }}</td>
+
+                            </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>
@@ -77,26 +97,29 @@
         <!-- FIN Tabla de cursos -->
 
         <!-- Tabla de notas -->
-        <div class="col-md-5">
-            <div id="cambiar-contrasena">
-                <h4 class="d-inline-block mt-1">Cambiar contraseña</h4>
-                <form>
-                    <div class="form-group">
-                        <label for="passOld">Ingrese su contraseña actual</label>
-                        <input type="password" class="form-control" id="passOld">
-                    </div>
-                    <div class="form-group">
-                        <label for="passNew">Ingrese su nueva contraseña</label>
-                        <input type="password" class="form-control" id="passNew">
-                    </div>
-                    <div class="form-group">
-                        <label for="passNewConfim">Confirme su nueva contraseña</label>
-                        <input type="password" class="form-control" id="passNewConfirm">
-                    </div>
-                    <button type="submit" class="btn btn-primary-custom">Confirmar</button>
-                    <button type="button" class="btn btn-cancel" onclick="cancelPass()">Cancelar</button>
-                </form>
-            </div>
+        <div class="col-md-4">
+            {% if owner %}
+                <div id="cambiar-contrasena">
+                    <h4 class="d-inline-block mt-1">Cambiar contraseña</h4>
+                    <form>
+                        <div class="form-group">
+                            <label for="passOld">Ingrese su contraseña actual</label>
+                            <input type="password" class="form-control" id="passOld">
+                        </div>
+                        <div class="form-group">
+                            <label for="passNew">Ingrese su nueva contraseña</label>
+                            <input type="password" class="form-control" id="passNew">
+                        </div>
+                        <div class="form-group">
+                            <label for="passNewConfim">Confirme su nueva contraseña</label>
+                            <input type="password" class="form-control" id="passNewConfirm">
+                        </div>
+                        <button type="submit" class="btn btn-primary-custom">Confirmar</button>
+                        <button type="button" class="btn btn-cancel" onclick="cancelPass()">Cancelar</button>
+                    </form>
+                </div>
+            {% endif %}
+
             <div id="notas-placeholder" class="mt-5">
                 <h5 class="font-weight-normal text-center text-muted">Selecciona un curso para ver tus notas</h5>
             </div>
