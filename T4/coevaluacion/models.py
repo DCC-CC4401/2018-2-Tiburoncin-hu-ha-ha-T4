@@ -133,7 +133,7 @@ class CoEvaluation(models.Model):
 
 class AnswerCoEvaluation(models.Model):
     # user = models.ForeignKey(User, on_delete=models.CASCADE)
-    user = models.ForeignKey(Group, on_delete=models.CASCADE)
+    user = models.ForeignKey(UserInCourse, on_delete=models.CASCADE)
     co_evaluation = models.ForeignKey(CoEvaluation, on_delete=models.CASCADE)
     # date = models.DateTimeField(default=datetime.now)
 
@@ -180,3 +180,12 @@ class QuestionsInCoEvaluation(models.Model):
 
     def __str__(self):
         return "%s: %s (weight=%s)" % (self.co_evaluation, self.question, self.weight)
+
+
+class GradesPerCoEvaluation(models.Model):
+    co_evaluation = models.ForeignKey(CoEvaluation, on_delete=models.CASCADE)
+    student = models.ForeignKey(User, on_delete=models.CASCADE)
+    grade = models.IntegerField()
+
+    def _str__(self):
+        return "%s (%s): %s" % (self.student, self.co_evaluation, self.grade)
