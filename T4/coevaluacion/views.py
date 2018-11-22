@@ -56,10 +56,10 @@ def logout(request):
     return redirect('/')
 
 
-def profile(request):
+def profile(request, rut):
     user = User.objects.get(user=request.user)
     context = {'user': user}
-    return render(request, 'perfil-vista-dueno.html', context)
+    return render(request, 'perfil-alumno-vista-docente.html', context)
 
 
 def course(request, year, semester, code, section):

@@ -168,7 +168,7 @@
                         {% for coev in coevs %}
                         <tr>
                             <td class="td-fecha">{{ coev.init_date }}</td>
-                            <td><a href="{% url 'coevaluation' coev.id %}">{{ coev.name }}</a></td>
+                            <td><a href="{% url "peer_assessment" year=2018 semester=2 code="CC4004" section=2 semester=2 id=3%}">{{ coev.name }}</a></td>
                             <td class="td-curso-full">
                                 <div class="cargos cargos-alumno tooltip-custom">
                                     <span class="tooltiptext"></span>
