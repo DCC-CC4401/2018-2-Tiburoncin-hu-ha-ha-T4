@@ -68,3 +68,9 @@ function showGestionGrupo() {
     document.getElementById("active-grupo").classList.add("active");
     document.getElementById("active-estudiante").classList.remove("active");
 }
+
+jQuery(document).ready(function($) {
+    $(".clickable-row").click(function() {
+        window.location = $(this).data("href");
+    });
+});

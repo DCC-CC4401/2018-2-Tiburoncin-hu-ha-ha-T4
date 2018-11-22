@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models.query import QuerySet
 from django.shortcuts import render, redirect
 
-from .models import User, UserInCourse, CoEvaluation, Course
+from .models import User, UserInCourse, CoEvaluation, Course, AnswerCoEvaluation
 
 
 def login(request):
@@ -33,9 +33,14 @@ def home(request):
     coevs = CoEvaluation.objects.filter(course=0)
     for uic in user_in_course:
         coevs = coevs | CoEvaluation.objects.filter(course=uic.course)
+
+    coevsInCourse = AnswerCoEvaluation.objects.filter(user=0)
+    for uic in user_in_course:
+        coevsInCourse = coevsInCourse | AnswerCoEvaluation.objects.filter(user=uic)
     context = {'user': user,
                'userInCourse': user_in_course,
-               'coevs': coevs}
+               'coevs': coevs,
+               'coevsInCourse': coevsInCourse}
 
     return render(request, 'home-vista-alumno.html', context)
 
