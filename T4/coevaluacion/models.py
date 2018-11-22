@@ -123,6 +123,17 @@ class CoEvaluation(models.Model):
     end_date = models.DateTimeField(default=datetime.max)
     publish = models.BooleanField(default=False)
 
+    def save(self, **kwargs):
+        super(CoEvaluation, self).save(**kwargs)
+        usersInCourse = UserInCourse.objects.filter(course=self.course)
+        for user in usersInCourse:
+            answerCoev = AnswerCoEvaluation()
+            answerCoev.co_evaluation = self
+            answerCoev.user = user
+            answerCoev.state = answerCoev.PENDENT
+            answerCoev.save()
+
+
     @property
     def open(self):
         return self.init_date < datetime.now() and not datetime.now() > self.end_date
