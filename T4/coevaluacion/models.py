@@ -1,6 +1,7 @@
 from django.db import models
 from datetime import datetime
 from django.contrib.auth.models import User as Auth_User
+from django.utils import timezone
 
 
 class User(models.Model):
@@ -110,38 +111,41 @@ class Group(models.Model):
         return "%s (%s): %s" % (self.name, self.course, self.member)
 
     class Meta:
-        unique_together = (("course", "name", "member"),)
+        unique_together = (("course", "name", "member", "active"),)
 
 
 class CoEvaluation(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     name = models.CharField(max_length=40, default='Co-evaluacion')
+    # date_start = datetime.now(tz=timezone.get_current_timezone())
+    date_end = datetime(year=9999, month=12, day=31,
+                        hour=23, minute=59, second=59, microsecond=999999,
+                        tzinfo=timezone.get_current_timezone())
 
-    init_date = models.DateTimeField(default=datetime.now)
-    end_date = models.DateTimeField(default=datetime.max)
+    init_date = models.DateTimeField(default=datetime.now(tz=timezone.get_current_timezone()))
+    end_date = models.DateTimeField(default=date_end)
     publish = models.BooleanField(default=False)
 
     def save(self, **kwargs):
         super(CoEvaluation, self).save(**kwargs)
         usersInCourse = UserInCourse.objects.filter(course=self.course)
         for user in usersInCourse:
-            answerCoev = AnswerCoEvaluation()
-            answerCoev.co_evaluation = self
-            answerCoev.user = user
-            answerCoev.state = answerCoev.PENDENT
-            answerCoev.save()
+            if user.rol == "Estudiante":
+                answerCoev = AnswerCoEvaluation()
+                answerCoev.co_evaluation = self
+                answerCoev.user = user
+                answerCoev.state = answerCoev.PENDENT
+                answerCoev.save()
 
-
-    @property
     def open(self):
-        return self.init_date < datetime.now() and not datetime.now() > self.end_date
+        return self.init_date < datetime.now(tz=timezone.get_current_timezone()) \
+               and not datetime.now(tz=timezone.get_current_timezone()) > self.end_date
 
     def __str__(self):
         return "%s, %s (%s - %s)" % (self.course, self.name, self.init_date, self.end_date)
 
 
 class AnswerCoEvaluation(models.Model):
-    # user = models.ForeignKey(User, on_delete=models.CASCADE)
     user = models.ForeignKey(UserInCourse, on_delete=models.CASCADE)
     co_evaluation = models.ForeignKey(CoEvaluation, on_delete=models.CASCADE)
     # date = models.DateTimeField(default=datetime.now)
@@ -158,27 +162,11 @@ class AnswerCoEvaluation(models.Model):
 
     state = models.CharField(max_length=10, choices=STATE_TYPE)
 
-    # ANSWER = 'Responde'
-    # PUBLISH = 'Publica'
-    # ACTION_TYPE = (
-    #     (ANSWER, ANSWER),
-    #     (PUBLISH, PUBLISH),
-    # )
-    # action_type = models.CharField(max_length=8, choices=ACTION_TYPE)
-
     def __str__(self):
         return "%s: %s (%s)" % (self.user, self.co_evaluation, self.state)
 
-
-class AnswerQuestion(models.Model):
-    user_who_answer = models.ForeignKey(User, related_name="answer", on_delete=models.CASCADE)
-    user_related = models.ForeignKey(User, on_delete=models.CASCADE)
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    response = models.TextField()
-
-    def __str__(self):
-        return "%s response %s related to %s" % (self.user_who_answer,
-                                                 self.question, self.user_related)
+    class Meta:
+        unique_together = (("user", "co_evaluation"),)
 
 
 class QuestionsInCoEvaluation(models.Model):
@@ -189,11 +177,31 @@ class QuestionsInCoEvaluation(models.Model):
     def __str__(self):
         return "%s: %s (weight=%s)" % (self.co_evaluation, self.question, self.weight)
 
+    class Meta:
+        unique_together = (("co_evaluation", "question"),)
+
+
+class AnswerQuestion(models.Model):
+    user_who_answer = models.ForeignKey(User, related_name="answer", on_delete=models.CASCADE)
+    user_related = models.ForeignKey(User, on_delete=models.CASCADE)
+    question = models.ForeignKey(QuestionsInCoEvaluation, on_delete=models.CASCADE)
+    response = models.TextField()
+
+    def __str__(self):
+        return "%s response %s related to %s" % (self.user_who_answer,
+                                                 self.question, self.user_related)
+
+    class Meta:
+        unique_together = (("user_who_answer", "user_related", "question"),)
+
 
 class GradesPerCoEvaluation(models.Model):
     co_evaluation = models.ForeignKey(CoEvaluation, on_delete=models.CASCADE)
-    student = models.ForeignKey(User, on_delete=models.CASCADE)
+    member = models.ForeignKey(User, on_delete=models.CASCADE)
     grade = models.IntegerField()
 
     def _str__(self):
-        return "%s (%s): %s" % (self.student, self.co_evaluation, self.grade)
+        return "%s (%s): %s" % (self.member, self.co_evaluation, self.grade)
+
+    class Meta:
+        unique_together = (("co_evaluation", "member"),)
