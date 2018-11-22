@@ -13,6 +13,23 @@ def course_name(course: Course, names: QuerySet):
     return names.filter(code=course.code)[0].name
 
 
+def results_coev(coev: CoEvaluation, user: User, AnswerCoEvaluation: QuerySet):
+    questions = QuestionsInCoEvaluation.objects.filter(co_evaluation=coev, weight__gt=0)
+    r = 0.0
+    n = len(questions)
+    for q in questions:
+        members = AnswerQuestion.objects.filter(user_related=user, question=q.question)
+        m = len(members)
+        l = 0.0
+        for m in members:
+            l += m.response * q.weight * 1.0
+        l /= m
+        r += l
+
+    return r/n
+
+
+
 # def has_answered(co_evaluation: CoEvaluation):
 #     ruts = UserActionOnCoEvaluation.objects.filter(action_type='Responde',
 #                                                    co_evaluation=co_evaluation).values_list('user')
