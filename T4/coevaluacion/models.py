@@ -29,14 +29,11 @@ class User(models.Model):
 
 
 class NamesPerCode(models.Model):
-    code = models.CharField(max_length=6)
+    code = models.CharField(max_length=6, primary_key=True)
     name = models.CharField(max_length=40)
 
     def __str__(self):
         return "%s: %s" % (self.name, self.code)
-
-    class Meta:
-        unique_together = (('code', 'name'),)
 
 
 class Course(models.Model):
@@ -55,8 +52,12 @@ class Course(models.Model):
     date = models.DateTimeField(default=datetime.now)
 
     def __str__(self):
-        return "%s-%s, %s %s" % (self.code, self.section_number,
-                                 self.semester, self.year)
+        if self.semester == 1:
+            sem = "Otoño"
+        else:
+            sem = "Primavera"
+        return "%s-%s %s %s, %s" % (self.code.code, self.section_number,
+                                    self.code.name, self.year, sem)
 
     class Meta:
         unique_together = (('code', 'section_number', 'year', 'semester'),)
