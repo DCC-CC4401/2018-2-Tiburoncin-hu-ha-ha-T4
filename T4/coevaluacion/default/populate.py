@@ -2,6 +2,7 @@ from ..models import *
 from django.contrib.auth.models import User as Auth_User
 from datetime import datetime, time, date
 from django.utils import timezone
+from ..queries import grade_in_coev
 
 '''
 script that is going to be used to populate the data base when it's empty.
@@ -24,11 +25,13 @@ def populate():
     users = create_user()
     codes = names_per_code()
     courses = create_course(codes)
-    _ = question()
+    questions = question()
     usr_course = user_in_course(courses, users)
     groups = group(usr_course)
     coevs = coevaluation(courses)
-    # ans_coev = answer_co_evaluation(groups, coevs)
+    q_in_coev = question_in_coev(coevs, questions)
+    _ = answer_Question(usr_course, questions)
+    _ = grades_per_coev(usr_course)
 
 
 # user
@@ -84,7 +87,7 @@ def create_course(names_code):
     section = [1] * 7 + [2] * 3
     year = [2018] * 10
     semester = [2] * 2 + [1] * 4 + [2] * 3 + [1]
-    days = [[i, 10, 23] for i in [1, 4, 4, 5, 7, 7, 7, 7, 10, 11]]
+    days = [[2018, i, 23] for i in [1, 4, 4, 5, 7, 7, 7, 7, 10, 11]]
     hours = [[8, i, 11] for i in range(0, 10)]
     date = [create_datetime(days[i], hours[i]) for i in range(0, 10)]
     code = []
@@ -183,21 +186,20 @@ def group(table_users_in_course):
         j = 0
         while i < len(courses) and courses[i] == c:
             name.append("grupo" + str(j))
-            j = (j+1) % 3
+            j = (j+1) % 2
             i += 1
-
     # generate a duplicated members wo change group, and one who delete
-    number_delete = 4
-    number_whos_change = [9, 12] # i know that these are students
-    courses.append(table_users_in_course[9].course)
-    members.append(table_users_in_course[12].member)
-    courses.append(table_users_in_course[12].course)
-    members.append(table_users_in_course[9].member)
+    nwc = [10, 9] # i know that these are students
+    courses.append(courses[nwc[0]])
+    courses.append(courses[nwc[1]])
+    members.append(members[nwc[0]])
+    members.append(members[nwc[1]])
+    name.append(name[nwc[1]])
+    name.append(name[nwc[0]])
 
     active = [True] * len(courses)
-    active[number_delete] = False
-    active[number_whos_change[0]] = False
-    active[number_whos_change[1]] = False
+    active[nwc[0]] = False
+    active[nwc[1]] = False
 
     table = []
     for c, m, n, a in zip(courses, members, name, active):
@@ -213,24 +215,87 @@ def group(table_users_in_course):
 
 def coevaluation(courses):
     table = []
-    for course in courses:
+    days = [[2018, 12, i] for i in [1, 4, 4, 5, 7, 7, 7, 7, 10, 11]]
+    hours = [[8, i, 11] for i in range(0, 10)]
+    dates = [create_datetime(days[i], hours[i]) for i in range(0, 10)]
+    for course, end_date in zip(courses, dates):
         coev = CoEvaluation()
         coev.course = course
         coev.name = "Coev: " + course.code.name
+        coev.end_date = end_date
         table.append(coev)
         coev.save()
     return table
 
 
-# TODO: NOT WORKING
-# def answer_co_evaluation(groups, co_evaluations):
-#     tmp = False
-#     for coev in co_evaluations:
-#         for data in groups:
-#             answer_coev = AnswerCoEvaluation()
-#             answer_coev.user = data
-#             answer_coev.co_evaluation = coev
-#             answer_coev.state = "Pendiente" if tmp else "Respondida"
-#             tmp = not tmp
-#             answer_coev.save()
-#     return table
+def question_in_coev(coevs, questions):
+    l = len(questions)
+    i = 0
+    k = 0
+    weights = [23, 45, 12, 35, 5, 35, 45, 44, 67, 43]
+    table = []
+    for coev in coevs:
+        for j in range(0, 10):
+            tmp = QuestionsInCoEvaluation()
+            if questions[i].question_type == "Grade":
+                tmp.weight = weights[k]
+                k = (k+2) % 10
+            else:
+                tmp.weight = 0
+            tmp.co_evaluation = coev
+            tmp.question = questions[i]
+            i = (i+1) % 10
+            table.append(tmp)
+            tmp.save()
+    return table
+
+
+def answer_Question(users_in_course, questions):
+
+    grades = [7, 7, 7, 6, 5, 6, 7, 5, 6, 7, 6, 6, 4, 7]
+    i = 0
+    table = []
+    for u in users_in_course:
+        if u.rol == "Estudiante":
+            c = u.course
+            n = Group.objects.filter(course=c, member=u.member, active=True)
+            if len(n) > 0:
+                n = n[0].name
+                members = Group.objects.filter(course=c, active=True, name=n)
+                coev = CoEvaluation.objects.get(course=c) # we know that there is only 1 per course
+                for q in QuestionsInCoEvaluation.objects.filter(co_evaluation=coev):
+                    for m in members:
+                        if m.member != u.member:
+                            tmp = AnswerQuestion()
+                            tmp.user_who_answer = u.member
+                            tmp.user_related = m.member
+                            tmp.question = q
+                            if tmp.question.question.question_type == "Grade":
+                                tmp.response = str(grades[i])
+                                i = (i+1) % len(grades)
+                            else:
+                                tmp.response = "baia baia"
+                            table.append(tmp)
+                            tmp.save()
+    return table
+
+
+def grades_per_coev(users_in_course):
+
+    table = []
+    for usr in users_in_course:
+        coevs = CoEvaluation.objects.filter(course=usr.course)
+        for coev in coevs:
+            c = UserInCourse.objects.filter(member=usr.member, rol="Estudiante",
+                                            course=coev.course).count()
+            if c == 1:
+
+                tmp = GradesPerCoEvaluation()
+                tmp.grade = int(round(grade_in_coev(usr.member, coev), 1) * 10)
+                tmp.co_evaluation = coev
+                tmp.member = usr.member
+                table.append(tmp)
+                tmp.save()
+            elif c > 2:
+                raise ValueError("a user is repeated in a course!!")
+    return table
