@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models.query import QuerySet
 from django.shortcuts import render, redirect
 
-from .models import User, UserInCourse, CoEvaluation, Course, AnswerCoEvaluation
+from .models import User, UserInCourse, CoEvaluation, Course, AnswerCoEvaluation, NamesPerCode
 
 
 def login(request):
@@ -84,7 +84,29 @@ def profile(request, rut):
 
 @login_required
 def course(request, year, semester, code, section):
-    return render(request, 'curso-vista-docente.html')
+    visitor = User.objects.get(user=request.user)
+    code_name = NamesPerCode.objects.get(code=code)
+    course = Course.objects.get(code=code_name, section_number=int(section),
+                                year=int(year), semester=int(semester))
+    coevs = CoEvaluation.objects.filter(course=course)
+    members = UserInCourse.objects.filter(course=course)
+    context = {
+        'visitor': visitor,
+        'course': course,
+        'members': members,
+        'coevs': coevs
+    }
+
+    if members.filter(member=visitor).count() == 1:
+        if members.get(course=course, member=visitor).rol == "Estudiante":
+            return render(request, "curso-vista-alumno.html", context)
+        else:
+            return render(request, "curso-vista-docente.html", context)
+
+    else:
+        # can be an admin, but for now, is not accepted
+        messages.warning(request, 'No tienes acceso a esta vista')
+        return redirect('/')
 
 
 @login_required
