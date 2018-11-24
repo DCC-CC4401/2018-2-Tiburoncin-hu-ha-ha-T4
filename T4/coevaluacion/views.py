@@ -26,21 +26,26 @@ def login_submit(request):
 
 @login_required
 def home(request):
-    user = User.objects.get(user=request.user)
-    user_in_course = UserInCourse.objects.filter(member=user)
-    coevs = CoEvaluation.objects.filter(course=0)
-    for uic in user_in_course:
-        coevs = coevs | CoEvaluation.objects.filter(course=uic.course)
+    logged_user = User.objects.get(user=request.user)
+    logged_courses = UserInCourse.objects.filter(member=logged_user)
+    assessments = CoEvaluation.objects.filter(course=0)
 
-    coevsInCourse = AnswerCoEvaluation.objects.filter(user=0)
-    for uic in user_in_course:
-        coevsInCourse = coevsInCourse | AnswerCoEvaluation.objects.filter(user=uic)
-    context = {'user': user,
-               'userInCourse': user_in_course,
-               'coevs': coevs,
-               'coevsInCourse': coevsInCourse}
+    is_teacher = False
+    for logged_course in logged_courses:
+        assessments = assessments | CoEvaluation.objects.filter(course=logged_course.course)
+        if logged_course.rol != "Estudiante":
+            is_teacher = True
 
-    return render(request, 'home-vista-alumno.html', context)
+    course_assessments = AnswerCoEvaluation.objects.filter(user=0)
+    for logged_course in logged_courses:
+        course_assessments = course_assessments | AnswerCoEvaluation.objects.filter(user=logged_course)
+    context = {'user': logged_user,
+               'is_teacher': is_teacher,
+               'userInCourse': logged_courses,
+               'coevs': assessments,
+               'coevsInCourse': course_assessments}
+
+    return render(request, 'home.html', context)
 
 
 @login_required
@@ -58,6 +63,12 @@ def profile(request, rut):
 
     owner_courses = UserInCourse.objects.filter(member=profile_user)
     logged_courses = UserInCourse.objects.filter(member=logged_user)
+
+    is_teacher = False
+    for logged_course in logged_courses:
+        if logged_course.rol != "Estudiante":
+            is_teacher = True
+            break
 
     courses = list()
     for owner_course in owner_courses:
@@ -84,6 +95,7 @@ def profile(request, rut):
     context = {
         'profile_user': profile_user,
         'user': logged_user,
+        'is_teacher': is_teacher,
         'owner': owner,
         'courses': courses
     }
@@ -97,9 +109,19 @@ def course(request, year, semester, code, section):
 
 @login_required
 def peer_assessment(request, year, semester, code, section, id):
-    user = User.objects.get(user=request.user)
-    ansCoev = AnswerCoEvaluation.objects.get(id=id)
+    logged_user = User.objects.get(user=request.user)
+    logged_courses = UserInCourse.objects.filter(member=logged_user)
+
+    is_teacher = False
+    for logged_course in logged_courses:
+        if logged_course.rol != "Estudiante":
+            is_teacher = True
+            break
+
+    assessment = AnswerCoEvaluation.objects.get(id=id)
     context = {
-        'user': user,
-        'ansCoev': ansCoev}
+        'user': logged_user,
+        'is_teacher': is_teacher,
+        'ansCoev': assessment,
+    }
     return render(request, 'coevaluacion-vista-alumno.html', context)
