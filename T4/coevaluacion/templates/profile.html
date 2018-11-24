@@ -20,7 +20,7 @@
             <span>{{ profile_user.email }}</span>
 
             {% if owner %}
-                <button type="button" id="change-pass-btn" class="btn btn-primary mt-3 d-block" onclick="changePass()">Cambiar contraseña</button>
+                <button type="button" id="change-pass-btn" class="btn btn-primary mt-3 d-block" onclick="changePass({{ courses|length }})">Cambiar contraseña</button>
             {% endif %}
         </div>
         <!-- FIN Perfil -->
@@ -40,54 +40,20 @@
                     </thead>
                     <!-- Cuerpo de tabla (Table Data) -->
                     <tbody>
-                        <tr id="row-btn" onclick="showNotas()">
-                            <td class="td-curso-full">
-                                <div class="cargos cargos-alumno tooltip-custom">
-                                    <span class="tooltiptext"></span>
-                                </div>
-                                <span class="curso-nombre">Proyecto de Software</span>
-                                <br>
-                                <span class="curso-codigo">CC5402-1</span>
-                            </td>
-                            <td>2018-2</td>
-                        </tr>
-                        <tr>
-                            <td class="td-curso-full">
-                                <div class="cargos cargos-alumno tooltip-custom">
-                                    <span class="tooltiptext"></span>
-                                </div>
-                                <span class="curso-nombre">Ingeniería de Software II</span>
-                                <br>
-                                <span class="curso-codigo">CC5401-1</span>
-                            </td>
-                            <td>2018-1</td>
-                        </tr>
-                        <tr>
-                            <td class="td-curso-full">
-                                <div class="cargos cargos-alumno tooltip-custom">
-                                    <span class="tooltiptext"></span>
-                                </div>
-                                <span class="curso-nombre">Ingeniería de Software I</span>
-                                <br>
-                                <span class="curso-codigo">CC4401-1</span>
-                            </td>
-                            <td>2017-2</td>
-                        </tr>
                         {% for c in courses %}
-                            <tr>
+                            <tr id="row-btn-{{ c.course_index }}" onclick="showGrades({{ c.course_index }}, {{ courses|length }})">
                                 <td class="td-curso-full">
                                     <div class="cargos cargos-alumno tooltip-custom">
                                         <span class="tooltiptext"></span>
                                     </div>
                                     <span class="curso-nombre">{{ c.course.course.code.name }}</span>
                                     {% if c.visitor_rol %}
-                                        <span class="cargos cargos-profesor fright"title="Eres Profesor/a en este ramo"></span>
+                                        <span class="cargos cargos-profesor fright" title="Eres Profesor/a en este ramo"></span>
                                     {% endif %}
                                     <br>
                                     <span class="curso-codigo">{{ c.course.course.code.code }}</span>
                                 </td>
                                 <td>{{ c.course.course.year }}-{{ c.course.course.semester }}</td>
-
                             </tr>
                         {% endfor %}
                     </tbody>
@@ -115,7 +81,7 @@
                             <input type="password" class="form-control" id="passNewConfirm">
                         </div>
                         <button type="submit" class="btn btn-primary-custom">Confirmar</button>
-                        <button type="button" class="btn btn-cancel" onclick="cancelPass()">Cancelar</button>
+                        <button type="button" class="btn btn-cancel" onclick="cancelPass({{ courses|length }})">Cancelar</button>
                     </form>
                 </div>
             {% endif %}
@@ -123,50 +89,39 @@
             <div id="notas-placeholder" class="mt-5">
                 <h5 class="font-weight-normal text-center text-muted">Selecciona un curso para ver tus notas</h5>
             </div>
-            <div id="notas-resumen">
-                <h4 class="d-inline-block mt-1">Tus Notas</h4>
-                <h5 class="float-right mb-0 mt-2 text-muted" id="currentCurso">CC5402-1, 2018-2</h5>
+            {% for c in courses %}
+                <div id="notas-resumen-{{ c.course_index }}" class="notas-resumen">
+                    <h4 class="d-inline-block mt-1">Tus Notas</h4>
+                    <h5 class="float-right mb-0 mt-2 text-muted" id="currentCurso">CC5402-1, 2018-2</h5>
 
-                <div class="table-wrap table-responsive my-1"> <!-- "Envoltura" de la tabla -->
-                    <table class="table table-notas-perfil table-striped table-hover mb-0"> <!-- Tabla -->
-                        <!-- Encabezados de tabla (Table Headers) -->
-                        <thead class="thead-light">
-                            <tr> <!-- Fila (Table Row) -->
-                                <th class="th-fecha">Publicada</th>
-                                <th class="th-titulo">Título</th>
-                                <th class="th-nota">Nota</th>
-                            </tr>
-                        </thead>
+                    <div class="table-wrap table-responsive my-1"> <!-- "Envoltura" de la tabla -->
+                        <table class="table table-notas-perfil table-striped table-hover mb-0"> <!-- Tabla -->
+                            <!-- Encabezados de tabla (Table Headers) -->
+                            <thead class="thead-light">
+                                <tr> <!-- Fila (Table Row) -->
+                                    <th class="th-fecha">Publicada</th>
+                                    <th class="th-titulo">Título</th>
+                                    <th class="th-nota">Nota</th>
+                                </tr>
+                            </thead>
 
-                        <!-- Cuerpo de tabla (Table Data) -->
-                        <tbody>
-                            <tr>
-                                <!-- Fecha de publicación -->
-                                <td class="td-fecha">23:59 22/11/17</td>
-                                <!-- Título de coevaluación -->
-                                <td>Tarea 4</td>
-                                <!-- Nota -->
-                                <td class="td-nota">6.2</td>
-                            </tr>
-                            <tr>
-                                <td class="td-fecha">23:59 13/10/17</td>
-                                <td>Tarea 3</td>
-                                <td class="td-nota td-nota-roja">3.8</td>
-                            </tr>
-                            <tr>
-                                <td class="td-fecha">23:59 17/09/17</td>
-                                <td>Tarea 2</td>
-                                <td class="td-nota">5.7</td>
-                            </tr>
-                            <tr>
-                                <td class="td-fecha">12:15 20/08/17</td>
-                                <td>Tarea 1</td>
-                                <td class="td-nota">6.5</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                            <!-- Cuerpo de tabla (Table Data) -->
+                            <tbody id="notas-resumen-table">
+                                {% for grade in c.grades %}
+                                    <tr>
+                                    <!-- Fecha de publicación -->
+                                    <td class="td-fecha">{{ grade.co_evaluation.init_date }}</td>
+                                    <!-- Título de coevaluación -->
+                                    <td>{{ grade.co_evaluation.name }}</td>
+                                    <!-- Nota -->
+                                    <td class="td-nota">{{ grade.grade }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            </div>
+            {% endfor %}
         </div>
     </div>
 </div>

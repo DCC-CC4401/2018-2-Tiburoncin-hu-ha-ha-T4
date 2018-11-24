@@ -16,6 +16,10 @@ body {
 #gestion-grupo,
 #gestion-estudiante { display: none; }
 
+.notas-resumen {
+    display: none;
+}
+
 .color-text {
 	color: #4c94c4;
 }
@@ -450,8 +454,12 @@ button:active > .clickable-icon {
 --------------------------------------------*/
 
 #cambiar-contrasena, #notas-resumen, #add-curso-form, #add-coev-form {
+
+}
+
+.notas-resumen {
     -webkit-animation: fadein 0.8s ease-in;
-    animation: fadein 0.8s; 
+    animation: fadein 0.8s;
 }
 
 .tr-pendiente {

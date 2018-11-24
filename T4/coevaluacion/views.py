@@ -2,10 +2,9 @@ from django.contrib import messages
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
-from django.db.models.query import QuerySet
 from django.shortcuts import render, redirect
 
-from .models import User, UserInCourse, CoEvaluation, Course, AnswerCoEvaluation
+from .models import User, UserInCourse, CoEvaluation, Course, AnswerCoEvaluation, GradesPerCoEvaluation
 
 
 def login(request):
@@ -60,7 +59,7 @@ def profile(request, rut):
     owner_courses = UserInCourse.objects.filter(member=profile_user)
     logged_courses = UserInCourse.objects.filter(member=logged_user)
 
-    courses = []
+    courses = list()
     for owner_course in owner_courses:
 
         visitor_rol = logged_courses.filter(course=owner_course.course)
@@ -73,9 +72,18 @@ def profile(request, rut):
 
     courses = sorted(courses, key=lambda x: (x['course'].course.year, x['course'].course.semester), reverse=True)
 
+    grades_per_assessment = GradesPerCoEvaluation.objects.filter(member=profile_user)
+    for i in range(len(courses)):
+        grades = list()
+        for grade in grades_per_assessment:
+            if grade.co_evaluation.course.code.code == courses[i]['course'].course.code.code:
+                grades.append(grade)
+        courses[i]['grades'] = grades
+        courses[i]['course_index'] = i
+
     context = {
         'profile_user': profile_user,
-        'logged_user': logged_user,
+        'user': logged_user,
         'owner': owner,
         'courses': courses
     }
