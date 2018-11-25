@@ -131,6 +131,12 @@ class Group(models.Model):
     def is_active(self):
         return self.active
 
+    def teammates(self):
+        """
+        here we should get the ACTUAL teammates of a student.
+        """
+        raise NotImplementedError()
+
     class Meta:
         unique_together = (("course", "name", "member", "active"),)
 
@@ -197,6 +203,32 @@ class CoEvaluation(models.Model):
         tmp = self.init_date.strftime("%H:%M %d/%m/%Y")
         return tmp[:-4] + tmp[-2:]
 
+    def publish_co_evaluation(self):
+        """
+        ideally here we should declare what happens when a co-evaluation
+        is published, this means, calculate the grade of every student and
+        store the results in GradesPerCoEvaluation, this is not required yet
+        and thus is not implemented but it is declared for completeness.
+        """
+        raise NotImplementedError()
+
+    def add_question(self, question, weight=1):
+        """
+        Here we should be able to add a new question to the co-evaluation
+
+        :param question:
+        :param weight:
+        """
+        raise NotImplementedError()
+
+    def remove_question(self, question):
+        """
+        Here que should be able to remove a question form the co-evaluation
+
+        :param question:
+        """
+        raise NotImplementedError()
+
     def __str__(self):
         return "%s, %s (%s - %s)" % (self.course, self.name, self.init_date, self.end_date)
 
@@ -252,6 +284,15 @@ class AnswerCoEvaluation(models.Model):
         else:
             return CoEvaluation.CLOSED
 
+    def answer(self):
+        """
+        Ideally here we should define what happens when a student answer a co-evaluation,
+        this means, set his state to ANSWERED and per every question in the co-evaluation,
+        store the answer in AnswerCoEvaluation.
+        When a student answers a CoEvaluation, it give answers with respect to all of his teammates.
+        """
+        raise NotImplementedError()
+
     class Meta:
         unique_together = (("user", "co_evaluation"),)
 
@@ -263,6 +304,12 @@ class QuestionsInCoEvaluation(models.Model):
 
     def __str__(self):
         return "%s: %s (weight=%s)" % (self.co_evaluation, self.question, self.weight)
+
+    def update_weight(self, weight):
+        """
+        here we can update the weight of this question in the specific co-evaluation
+        """
+        raise NotImplementedError()
 
     class Meta:
         unique_together = (("co_evaluation", "question"),)
