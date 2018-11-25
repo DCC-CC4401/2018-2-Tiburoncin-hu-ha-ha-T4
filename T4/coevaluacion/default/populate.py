@@ -20,17 +20,30 @@ In[]: populate()
 
 
 def populate():
+    print("Creating Django Admin...")
     admin_user = Auth_User.objects.create_superuser(username='admin', password='tiburoncinadmin', email='admin@admin.cl')
     admin_user.save()
+    print("Creating Users...")
     users = create_user()
+    print("Creating Course Codes and names...")
     codes = names_per_code()
+    print("Creating Courses...")
     courses = create_course(codes)
+    print("Creating questions...")
     questions = question()
+    print("Putting Users in some Courses...")
     usr_course = user_in_course(courses, users)
-    groups = group(usr_course)
+    print("Creating Groups per Course...")
+    _ = group(courses)
+    print("Putting Users in groups...")
+    user_in_group(courses)
+    print("Creating Co-evaluations per course...")
     coevs = coevaluation(courses)
-    q_in_coev = question_in_coev(coevs, questions)
+    print("Creating questions per co-evaluation...")
+    _ = question_in_coev(coevs, questions)
+    print("Simulating Answer for those questions...")
     _ = answer_Question(usr_course, questions)
+    print("Calculating grades in this co-evaluations...")
     _ = grades_per_coev(usr_course)
 
 
@@ -41,8 +54,8 @@ def create_user():
     email = ['email{}@gmail.com'.format(i) for i in range(1, 11)]
     password = ['123456' + str(i) for i in range(1, 11)]
     user_type = ['AD'] + ['NP'] * 9
-    rut = ["11.23{}.444-2".format(i) for i in range(0, 5)] + \
-          ["22.23{}.111-1".format(i) for i in range(0, 5)]
+    rut = ["1123{}444-2".format(i) for i in range(0, 5)] + \
+          ["2223{}111-1".format(i) for i in range(0, 5)]
     table = []
     for f, l, e, p, u, r in zip(first_names, last_names, email, password, user_type, rut):
         user = Auth_User.objects.create_user(username=r, password=p)
@@ -114,19 +127,6 @@ def create_course(names_code):
     return table
 
 
-# code names
-# def names_per_code():
-#     names = ["curso" + str(i) for i in range(0, 7)]
-#     table = []
-#     for c, n in zip(code[:7], names):
-#         tmp = NamesPerCode()
-#         tmp.code = c
-#         tmp.name = n
-#         table.append(tmp)
-#         tmp.save()
-#     return table
-
-
 # question
 def question():
     ids = [i for i in range(0, 10)]
@@ -152,14 +152,15 @@ def user_in_course(table_courses, table_users):
     for i in [0, 3, 6, 4, 9, 8]:
         k = 0
         while k < 7:
-            if table_users[j].not_admin():
+            if table_users[j].not_admin:
                 members.append(table_users[j])
                 courses.append(table_courses[i])
                 k += 1
             j = (j + 1)% 10
 
     l = len(courses)
-    rol_of_one_course = ["Profesor", "Profesor auxiliar"] + ["Estudiante"] * 5
+    rol_of_one_course = [UserInCourse.PROFESOR, UserInCourse.AUXILIAR_TEACHER] + \
+                        [UserInCourse.ESTUDIANTE] * 5
     rol = rol_of_one_course * 6
     active = [False] * 7 * 2 + [True] * 7 * 4
     table = []
@@ -174,47 +175,68 @@ def user_in_course(table_courses, table_users):
     return table
 
 
-# groups
-def group(table_users_in_course):
-    courses = []
-    members = []
-    for uc in table_users_in_course:
-        if uc.rol == "Estudiante":
-            courses.append(uc.course)
-            members.append(uc.member)
-
+# group
+def group(courses):
+    # for every course, create 2 groups
     name = []
-    i = 0
-    while i < len(courses):
-        c = courses[i]
-        j = 0
-        while i < len(courses) and courses[i] == c:
-            name.append("grupo" + str(j))
-            j = (j+1) % 2
-            i += 1
-    # generate a duplicated members wo change group, and one who delete
-    nwc = [11, 10] # i know that these are students
-    courses.append(courses[nwc[0]])
-    courses.append(courses[nwc[1]])
-    members.append(members[nwc[0]])
-    members.append(members[nwc[1]])
-    name.append(name[nwc[1]])
-    name.append(name[nwc[0]])
-
-    active = [True] * len(courses)
-    active[nwc[0]] = False
-    active[nwc[1]] = False
+    course = []
+    for c in courses:
+        name.append("Este no es un grupo " + str(c.id))
+        name.append("Este tampoco :C " + str(c.id))
+        course.append(c)
+        course.append(c)
 
     table = []
-    for c, m, n, a in zip(courses, members, name, active):
+    for c, n in zip(course, name):
         tmp = Group()
         tmp.course = c
-        tmp.member = m
         tmp.name = n
-        tmp.active = a
         table.append(tmp)
         tmp.save()
     return table
+
+
+# groups
+def user_in_group(courses):
+    groups = []
+    members = []
+    state = []
+    p = courses[3]
+    for c in courses:
+        usrs = UserInCourse.objects.filter(course=c,
+                                           rol=UserInCourse.ESTUDIANTE)
+        grps = Group.objects.filter(course=c)
+        N = grps.count()
+        n = 0
+        for u in usrs:
+            groups.append(grps[n])
+            members.append(u.member)
+            state.append(True)
+            n = (n+1) % N
+    table = []
+    for g, m, a in zip(groups, members, state):
+        tmp = UserInGroup()
+        tmp.group = g
+        tmp.member = m
+        tmp.active = a
+        table.append(tmp)
+        tmp.save()
+
+    # change two studen of groups
+    c = UserInCourse.objects.filter(rol=UserInCourse.ESTUDIANTE)[5].course  # get some course
+    groups = Group.objects.filter(course=c)
+    user_groups = UserInGroup.objects.filter(group__in=groups)  # get all the users in groups for that course
+    u1 = user_groups[3] # take a member of any of these groups
+    # and take another one in a different group
+    for u2 in user_groups:
+        if u2.group != u1.group:
+            break
+
+    u1.change_group(u2.group)
+    u2.change_group(u1.group)
+    # raise ValueError()
+
+    return None
 
 
 def coevaluation(courses):
@@ -241,7 +263,7 @@ def question_in_coev(coevs, questions):
     for coev in coevs:
         for j in range(0, 10):
             tmp = QuestionsInCoEvaluation()
-            if questions[i].question_type == "Grade":
+            if questions[i].is_grade:
                 tmp.weight = weights[k]
                 k = (k+2) % 10
             else:
@@ -260,27 +282,32 @@ def answer_Question(users_in_course, questions):
     i = 0
     table = []
     for u in users_in_course:
-        if u.rol == "Estudiante":
+        if u.is_student:
             c = u.course
-            n = Group.objects.filter(course=c, member=u.member, active=True)
-            if len(n) > 0:
-                n = n[0].name
-                members = Group.objects.filter(course=c, active=True, name=n)
+            possible_groups = Group.objects.filter(course=c)
+            user_who_answer = UserInGroup.objects.filter(group__in=possible_groups, member=u.member)
+            user_who_answer = user_who_answer.filter(active=True)
+            if len(user_who_answer) == 1:
+                user_who_answer = user_who_answer[0]
+                users_related = UserInGroup.objects.filter(group=user_who_answer.group, active=True)
                 coev = CoEvaluation.objects.get(course=c) # we know that there is only 1 per course
                 for q in QuestionsInCoEvaluation.objects.filter(co_evaluation=coev):
-                    for m in members:
-                        if m.member != u.member:
+                    for user_related in users_related:
+                        if user_related.member != user_who_answer.member:
                             tmp = AnswerQuestion()
-                            tmp.user_who_answer = u.member
-                            tmp.user_related = m.member
+                            tmp.user_who_answer = user_who_answer.member
+                            tmp.user_related = user_related.member
                             tmp.question = q
-                            if tmp.question.question.question_type == "Grade":
+                            tmp.group = user_who_answer.group
+                            if tmp.question.question.is_grade:
                                 tmp.response = str(grades[i])
                                 i = (i+1) % len(grades)
                             else:
                                 tmp.response = "baia baia"
                             table.append(tmp)
                             tmp.save()
+            else:
+                raise ValueError("Problema")
     return table
 
 
@@ -290,7 +317,7 @@ def grades_per_coev(users_in_course):
     for usr in users_in_course:
         coevs = CoEvaluation.objects.filter(course=usr.course)
         for coev in coevs:
-            c = UserInCourse.objects.filter(member=usr.member, rol="Estudiante",
+            c = UserInCourse.objects.filter(member=usr.member, rol=UserInCourse.ESTUDIANTE,
                                             course=coev.course).count()
             if c == 1:
 
