@@ -71,6 +71,10 @@ def profile(request, rut):
             break
 
     courses = list()
+
+    for owner_course in owner_courses:
+        print(owner_course.course.code.code)
+
     for owner_course in owner_courses:
 
         visitor_rol = logged_courses.filter(course=owner_course.course)
@@ -87,7 +91,7 @@ def profile(request, rut):
     for i in range(len(courses)):
         grades = list()
         for grade in grades_per_assessment:
-            if grade.co_evaluation.course.code.code == courses[i]['course'].course.code.code:
+            if grade.co_evaluation.course == courses[i]['course'].course:
                 grades.append(grade)
         courses[i]['grades'] = grades
         courses[i]['course_index'] = i
