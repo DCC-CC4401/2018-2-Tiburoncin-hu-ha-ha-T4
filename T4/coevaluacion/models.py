@@ -24,8 +24,20 @@ class User(models.Model):
     def __str__(self):
         return "%s, %s" % (self.last_name, self.first_name)
 
+    @property
+    def get_simple_rut(self):
+        return str(self.rut)[:-2]
+
+    @property
+    def get_checker_digit(self):
+        return str(self.rut)[-1]
+
+    @property
     def not_admin(self):
         return self.user_type == self.NATURAL_PERSON
+
+    def compare_rut(self, rut):
+        return str(self.rut) == str(rut)
 
 
 class NamesPerCode(models.Model):
@@ -77,6 +89,14 @@ class Question(models.Model):
     def __str__(self):
         return "%s: (type %s) %s" % (self.id, self.question_type, self.question[:10])
 
+    @property
+    def is_grade(self):
+        return self.question_type == self.GRADE
+
+    @property
+    def is_free(self):
+        return self.question_type == self.FREE
+
 
 class UserInCourse(models.Model):
     member = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -121,15 +141,31 @@ class UserInCourse(models.Model):
 class Group(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
-    member = models.ForeignKey(User, on_delete=models.CASCADE)
-    active = models.BooleanField(default=True)
 
     def __str__(self):
-        return "%s (%s): %s" % (self.name, self.course, self.member)
+        return "%s" % (self.name, )
+
+    class Meta:
+        unique_together = (("course", "name"),)
+
+
+class UserInGroup(models.Model):
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    member = models.ForeignKey(User, on_delete=models.CASCADE)
+    active = models.BooleanField(default=True)
 
     @property
     def is_active(self):
         return self.active
+
+    def is_alone(self):
+        """
+        this should check if a member is alone in a group, in that case
+        we need to add a new member to this group or delete de group and
+        move the student to another group. A member alone in a group should
+        be considered as a member who is not in a group.
+        """
+        raise NotImplementedError()
 
     def teammates(self):
         """
@@ -137,8 +173,26 @@ class Group(models.Model):
         """
         raise NotImplementedError()
 
+    def change_group(self, group):
+        """
+        here we can change the actual group of a member,
+        this means, set as non active in this group and add
+        a new entry in the data base with the member in the new group
+        """
+        self.active = False
+        self.save()
+
+        tmp = UserInGroup()
+        tmp.group = group
+        tmp.member = self.member
+        tmp.active = True
+        tmp.save()
+
+    def __str__(self):
+        return "%s: %s (%s)" % (self.group, self.member, self.active)
+
     class Meta:
-        unique_together = (("course", "name", "member", "active"),)
+        unique_together = (("group", "member"),)
 
 
 class CoEvaluation(models.Model):
@@ -318,6 +372,7 @@ class QuestionsInCoEvaluation(models.Model):
 class AnswerQuestion(models.Model):
     user_who_answer = models.ForeignKey(User, related_name="answer", on_delete=models.CASCADE)
     user_related = models.ForeignKey(User, on_delete=models.CASCADE)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
     question = models.ForeignKey(QuestionsInCoEvaluation, on_delete=models.CASCADE)
     response = models.TextField()
 
@@ -327,11 +382,11 @@ class AnswerQuestion(models.Model):
 
     @property
     def is_free(self):
-        return self.question.question_type == Question.FREE
+        return self.question.is_free()
 
     @property
     def is_grade(self):
-        return self.question.question_type == Question.GRADE
+        return self.question.is_grade()
 
     class Meta:
         unique_together = (("user_who_answer", "user_related", "question"),)
