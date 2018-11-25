@@ -12,8 +12,10 @@ python3 coevaluacion/default/clear.py
 
 # reset the data base
 def erase_database():
-    os.system('rm -r ./coevaluacion/migrations/*')
-    os.system('rm ./db.sqlite3')
+    if os.path.exists("./coevaluacion/migrations/"):
+        os.system('rm -r ./coevaluacion/migrations/*')
+    if os.path.exists("./db.sqlite3"):
+        os.system('rm ./db.sqlite3')
     os.system('python3 manage.py makemigrations coevaluacion')
     os.system('python3 manage.py migrate')
 
