@@ -76,8 +76,8 @@ function showGestionEstudiante() {
     document.getElementById("active-grupo").classList.remove("active");
 }
 
-function showGestionGrupo() {
-    document.getElementById("gestion-grupo").style.display = "block";
+function showGestionGrupo(name) {
+    document.getElementById("gestion-grupo-" + name).style.display = "block";
     document.getElementById("gestion-estudiante").style.display = "none";
     document.getElementById("gestion-placeholder").style.display = "none";
     document.getElementById("active-grupo").classList.add("active");

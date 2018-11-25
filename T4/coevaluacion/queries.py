@@ -123,8 +123,12 @@ def course_student_query(context):
 def course_teacher_query(context):
     groups = Group.objects.filter(course=context["course"])
     actives = groups.filter(active=True).values_list("name").distinct()
+    itervar = []
+    for i in range(actives.count()):
+        members = groups.filter(name=actives[i])
+        itervar.append({"active": actives[i], "i": i, "members": members})
     context["groups"] = groups
-    context["actives"] = actives
+    context["itervar"] = itervar
     return context
 
 

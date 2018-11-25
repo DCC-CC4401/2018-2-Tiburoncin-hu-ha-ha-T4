@@ -187,7 +187,6 @@ class CoEvaluation(models.Model):
         else:
             return self.CLOSED
 
-
     @property
     def get_end_date(self):
         tmp = self.end_date.strftime("%H:%M %d/%m/%Y")

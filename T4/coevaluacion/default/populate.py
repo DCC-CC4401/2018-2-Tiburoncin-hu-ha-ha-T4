@@ -84,7 +84,7 @@ def names_per_code():
 
 
 def create_course(names_code):
-    section = [1] * 7 + [2] * 3
+    section = [1] * 10
     year = [2018] * 10
     semester = [2] * 2 + [1] * 4 + [2] * 3 + [1]
     days = [[2018, i, 23] for i in [1, 4, 4, 5, 7, 7, 7, 7, 10, 11]]
