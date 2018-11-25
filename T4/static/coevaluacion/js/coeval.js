@@ -27,26 +27,41 @@ function cancelAdd() {
 
 /* Perfil */
 
-function changePass() {
+function changePass(coursesLength) {
     document.getElementById("cambiar-contrasena").style.display = "block";
-    document.getElementById("notas-resumen").style.display = "none";
+    for (let i = 0; i < coursesLength; i++) {
+        document.getElementById("notas-resumen-"+i.toString()).style.display = "none";
+        document.getElementById("row-btn-"+i.toString()).classList.remove("active");
+    }
+
     document.getElementById("notas-placeholder").style.display = "none";
     document.getElementById("change-pass-btn").classList.add("active");
-    document.getElementById("row-btn").classList.remove("active");
 }
 
-function showNotas() {
-    document.getElementById("cambiar-contrasena").style.display = "none";
-    document.getElementById("notas-resumen").style.display = "block";
+function showGrades(courseIndex, coursesLength) {
+    if (document.getElementById("cambiar-contrasena")) {
+        document.getElementById("cambiar-contrasena").style.display = "none";
+    }
     document.getElementById("notas-placeholder").style.display = "none";
-    document.getElementById("row-btn").classList.add("active");
-    var changePass = document.getElementById("change-pass-btn");
+
+    for (let i = 0; i < coursesLength; i++) {
+        document.getElementById("notas-resumen-"+i.toString()).style.display = "none";
+        document.getElementById("row-btn-" + i.toString()).classList.remove("active");
+    }
+
+    document.getElementById("notas-resumen-"+courseIndex.toString()).style.display = "block";
+    document.getElementById("row-btn-" + courseIndex.toString()).classList.add("active");
+    let changePass = document.getElementById("change-pass-btn");
     if (changePass !== null) changePass.classList.remove("active");
 }
 
-function cancelPass() {
+
+function cancelPass(coursesLength) {
     document.getElementById("cambiar-contrasena").style.display = "none";
-    document.getElementById("notas-resumen").style.display = "none";
+     for (let i = 0; i < coursesLength; i++) {
+        document.getElementById("notas-resumen-"+i.toString()).style.display = "none";
+        document.getElementById("row-btn-" + i.toString()).classList.remove("active");
+    }
     document.getElementById("change-pass-btn").classList.add("active");
     document.getElementById("notas-placeholder").style.display = "block";
 }

@@ -2,11 +2,10 @@ from django.contrib import messages
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
-from django.db.models.query import QuerySet
 from django.shortcuts import render, redirect
 
 from .queries import *
-from .models import User, UserInCourse, CoEvaluation, Course, AnswerCoEvaluation, NamesPerCode
+from .models import User, UserInCourse, CoEvaluation, Course, AnswerCoEvaluation, GradesPerCoEvaluation
 
 
 def login(request):
@@ -28,21 +27,26 @@ def login_submit(request):
 
 @login_required
 def home(request):
-    user = User.objects.get(user=request.user)
-    user_in_course = UserInCourse.objects.filter(member=user)
-    coevs = CoEvaluation.objects.filter(course=0)
-    for uic in user_in_course:
-        coevs = coevs | CoEvaluation.objects.filter(course=uic.course)
+    logged_user = User.objects.get(user=request.user)
+    logged_courses = UserInCourse.objects.filter(member=logged_user)
+    assessments = CoEvaluation.objects.filter(course=0)
 
-    coevsInCourse = AnswerCoEvaluation.objects.filter(user=0)
-    for uic in user_in_course:
-        coevsInCourse = coevsInCourse | AnswerCoEvaluation.objects.filter(user=uic)
-    context = {'user': user,
-               'userInCourse': user_in_course,
-               'coevs': coevs,
-               'coevsInCourse': coevsInCourse}
+    is_teacher = False
+    for logged_course in logged_courses:
+        assessments = assessments | CoEvaluation.objects.filter(course=logged_course.course)
+        if logged_course.rol != "Estudiante":
+            is_teacher = True
 
-    return render(request, 'home-vista-alumno.html', context)
+    course_assessments = AnswerCoEvaluation.objects.filter(user=0)
+    for logged_course in logged_courses:
+        course_assessments = course_assessments | AnswerCoEvaluation.objects.filter(user=logged_course)
+    context = {'user': logged_user,
+               'is_teacher': is_teacher,
+               'userInCourse': logged_courses,
+               'coevs': assessments,
+               'coevsInCourse': course_assessments}
+
+    return render(request, 'home.html', context)
 
 
 @login_required
@@ -61,7 +65,13 @@ def profile(request, rut):
     owner_courses = UserInCourse.objects.filter(member=profile_user)
     logged_courses = UserInCourse.objects.filter(member=logged_user)
 
-    courses = []
+    is_teacher = False
+    for logged_course in logged_courses:
+        if logged_course.rol != "Estudiante":
+            is_teacher = True
+            break
+
+    courses = list()
     for owner_course in owner_courses:
 
         visitor_rol = logged_courses.filter(course=owner_course.course)
@@ -74,21 +84,23 @@ def profile(request, rut):
 
     courses = sorted(courses, key=lambda x: (x['course'].course.year, x['course'].course.semester), reverse=True)
 
+    grades_per_assessment = GradesPerCoEvaluation.objects.filter(member=profile_user)
+    for i in range(len(courses)):
+        grades = list()
+        for grade in grades_per_assessment:
+            if grade.co_evaluation.course.code.code == courses[i]['course'].course.code.code:
+                grades.append(grade)
+        courses[i]['grades'] = grades
+        courses[i]['course_index'] = i
+
     context = {
         'profile_user': profile_user,
-        'logged_user': logged_user,
+        'user': logged_user,
+        'is_teacher': is_teacher,
         'owner': owner,
         'courses': courses
     }
     return render(request, 'profile.html', context)
-
-
-def _get_itervar(coevs, visitor_member):
-    itervar = []
-    for coev in coevs:
-        status = AnswerCoEvaluation.objects.get(user=visitor_member, co_evaluation=coev)
-        itervar.append({"coev": coev, "status": status})
-    return itervar
 
 
 @login_required
@@ -110,9 +122,19 @@ def course(request, year, semester, code, section):
 
 @login_required
 def peer_assessment(request, year, semester, code, section, id):
-    user = User.objects.get(user=request.user)
-    ansCoev = AnswerCoEvaluation.objects.get(id=id)
+    logged_user = User.objects.get(user=request.user)
+    logged_courses = UserInCourse.objects.filter(member=logged_user)
+
+    is_teacher = False
+    for logged_course in logged_courses:
+        if logged_course.rol != "Estudiante":
+            is_teacher = True
+            break
+
+    assessment = AnswerCoEvaluation.objects.get(id=id)
     context = {
-        'user': user,
-        'ansCoev': ansCoev}
+        'user': logged_user,
+        'is_teacher': is_teacher,
+        'ansCoev': assessment,
+    }
     return render(request, 'coevaluacion-vista-alumno.html', context)
