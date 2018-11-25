@@ -278,6 +278,14 @@ class AnswerQuestion(models.Model):
         return "%s response %s related to %s" % (self.user_who_answer,
                                                  self.question, self.user_related)
 
+    @property
+    def is_free(self):
+        return self.question.question_type == Question.FREE
+
+    @property
+    def is_grade(self):
+        return self.question.question_type == Question.GRADE
+
     class Meta:
         unique_together = (("user_who_answer", "user_related", "question"),)
 
