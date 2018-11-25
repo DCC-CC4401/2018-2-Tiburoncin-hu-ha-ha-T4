@@ -144,7 +144,7 @@ def question():
 def user_in_course(table_courses, table_users):
     members = []
     courses = []
-    j = 0
+    j = 1
     for i in [0, 3, 6, 4, 9, 8]:
         k = 0
         while k < 7:
@@ -189,7 +189,7 @@ def group(table_users_in_course):
             j = (j+1) % 2
             i += 1
     # generate a duplicated members wo change group, and one who delete
-    nwc = [10, 9] # i know that these are students
+    nwc = [11, 10] # i know that these are students
     courses.append(courses[nwc[0]])
     courses.append(courses[nwc[1]])
     members.append(members[nwc[0]])
