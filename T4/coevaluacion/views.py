@@ -58,22 +58,17 @@ def logout(request):
 
 @login_required
 def profile(request, rut):
-    logged_user = User.objects.get(user=request.user)
+    visitor = User.objects.get(user=request.user)
 
-    owner = (logged_user.rut == rut)
-    logged_courses = UserInCourse.objects.filter(member=logged_user)
-
-    is_teacher = False
-    for course in logged_courses:
-        if not course.is_student:
-            is_teacher = True
-            break
+    is_owner = (visitor.rut == rut)
+    visitor_courses = UserInCourse.objects.filter(member=visitor)
+    is_teacher = is_visitor_teacher(request)
 
     try:
         profile_user = User.objects.get(rut=rut)
     except User.DoesNotExist:
         context = {
-            'user': logged_user,
+            'user': visitor,
             'is_teacher': is_teacher,
         }
         if not is_teacher:
@@ -88,14 +83,14 @@ def profile(request, rut):
 
     is_owners_teacher = False
     for owner_course in owner_courses:
-        is_common_course = len(logged_courses.filter(course=owner_course.course)) != 0
+        is_common_course = len(visitor_courses.filter(course=owner_course.course)) != 0
 
         if is_common_course:
-            visitor = logged_courses.filter(course=owner_course.course)[0]
+            visitor = visitor_courses.filter(course=owner_course.course)[0]
         else:
             visitor = None
 
-        if (owner_course.course.id,) in list(logged_courses.values_list("course")) and not visitor.is_student:
+        if (owner_course.course.id,) in list(visitor_courses.values_list("course")) and not visitor.is_student:
             courses.append({'course': owner_course, 'visitor_rol': visitor.rol})
             is_owners_teacher = True
         else:
@@ -117,9 +112,9 @@ def profile(request, rut):
 
     context = {
         'profile_user': profile_user,
-        'user': logged_user,
+        'user': visitor,
         'is_teacher': is_teacher,
-        'owner': owner,
+        'is_owner': is_owner,
         'courses': courses
     }
     return render(request, 'profile.html', context)
@@ -127,33 +122,59 @@ def profile(request, rut):
 
 @login_required
 def course(request, year, semester, code, section):
-    logged_user = User.objects.get(user=request.user)
+    visitor_user = User.objects.get(user=request.user)
 
-    logged_courses = UserInCourse.objects.filter(member=logged_user)
+    # Si el curso no existe, retorna error 404
+    try:
+        requested_course = Course.objects.get(code=NamesPerCode.objects.get(code=code),
+                                              section_number=int(section),
+                                              year=int(year),
+                                              semester=int(semester))
+    except Course.DoesNotExist:
+        return render(request, "404.html", {'user': visitor_user, 'is_teacher': is_visitor_teacher(request)})
 
-    is_teacher = False
-    for course in logged_courses:
-        if not course.is_student:
-            is_teacher = True
-            break
+    members = UserInCourse.objects.filter(course=requested_course)
 
-    context, c = course_base_query(request, year, semester, code, section)
+    # Si no pertenece al curso, no puede ver la pagina del mismo
+    if members.filter(member=visitor_user).count() == 0:
+        return render(request, "403.html", {'user': visitor_user, 'is_teacher': is_visitor_teacher(request)})
 
-    context['is_teacher'] = is_teacher
-    context['user'] = logged_user
+    visitor_in_course = members.get(member=visitor_user)
 
-    if c == 1:
-        if context["usrcourse"].is_student:
-            context = course_student_query(context)
-            return render(request, "curso-vista-alumno.html", context)
-        else:
-            context = course_teacher_query(context)
-            return render(request, "curso-vista-docente.html", context)
+    upper_table = list()
+    assessments = CoEvaluation.objects.filter(course=requested_course)
+    for assessment in assessments:
+        try:
+            status = AnswerCoEvaluation.objects.get(user=visitor_in_course, co_evaluation=assessment)
+        except AnswerCoEvaluation.DoesNotExist:
+            status = None
+        upper_table.append({'assessment': assessment, 'status': status})
 
-    else:
-        # can be an admin, but for now, is not accepted
-        messages.warning(request, 'No tienes acceso a esta vista')
-        return redirect('/')
+    context = {
+        'user': visitor_user,
+        'user_in_course': visitor_in_course,
+        'course': requested_course,
+        'members': members,
+        'upper_table': upper_table,
+        'is_teacher': is_visitor_teacher(request)}
+
+    if not visitor_in_course.is_student:
+        groups = Group.objects.filter(course=requested_course)
+        active_groups = groups.filter(active=True).values_list("name").distinct()
+
+        groups_list = list()
+        for group in active_groups:
+            group_members = groups.filter(name=group[0])
+
+            group_members_list = list()
+            for group_member in group_members:
+                group_members_list.append(group_member.member)
+
+            groups_list.append({'name': group[0], 'members': group_members_list})
+
+        context['groups_list'] = groups_list
+
+    return render(request, "course.html", context)
 
 
 @login_required

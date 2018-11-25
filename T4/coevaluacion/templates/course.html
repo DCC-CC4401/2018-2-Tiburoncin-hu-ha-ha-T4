@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% block content %}
+<div class="container"> <!-- Contenedor responsivo de Bootstrap, se adapta a la pantalla usando columnas. -->
+
+    <h3 class="d-inline-block page-title">Ficha de Curso</h3>
+    <h5 class="mb-3">
+        {% if user_in_course.is_teacher %}
+            <div class="cargos cargos-profesor"></div>
+        {% elif user_in_course.is_assistant_teacher %}
+            <div class="cargos cargos-auxiliar"></div>
+        {% elif user_in_course.is_assistant %}
+            <div class="cargos cargos-ayudante"></div>
+        {% else %}
+            <div class="cargos cargos-alumno"></div>
+        {% endif %}
+        {{ course }}
+    </h5>
+    <hr/>
+    <!-- Tablas de resumen -->
+    <div class="row">
+        <!-- Tabla de coevaluaciones -->
+        <div class="col-md-10 offset-1 mb-5">
+            <h4 class="d-inline-block mt-1">Coevaluaciones del curso</h4>
+
+            <!-- Si no es docente, no muestra botón de Agregar Coevaluación -->
+            {% if not user_in_course.is_student %}
+                <button type="button" id="add-coev-btn" class="btn btn-primary-custom float-right">Agregar coevaluación</button>
+            {% endif %}
+
+            <div class="table-wrap table-responsive my-1"> <!-- "Envoltura" de la tabla -->
+                <table class="table table-coeval-curso table-striped table-hover mb-0"> <!-- Tabla -->
+                    <!-- Encabezados de tabla (Table Headers) -->
+                    <thead class="thead-light">
+                        <tr> <!-- Fila (Table Row) -->
+                            <th class="th-fecha">Fecha inicio</th>
+                            <th class="th-titulo">Nombre</th>
+                            <th class="th-fecha">Fecha límite</th>
+                            <th class="th-estado">Estado</th>
+                            <th class="th-iconos"></th>
+                        </tr>
+                    </thead>
+
+                    <!-- Cuerpo de tabla (Table Data) -->
+                    <tbody>
+                        {% for tr in upper_table %}
+                            <!-- La coevaluación solo puede estar pendiente si el usuario es estudiante -->
+                            {% if user_in_course.is_student and tr.status.is_pending %}
+                                <tr class="tr-pendiente">
+                            {% else %}
+                                <tr>
+                            {% endif  %}
+
+                                <td class="td-fecha"> {{ tr.assessment.get_init_date }} </td>
+                                <td>{{ tr.assessment.name }} </td>
+                                <td class="td-fecha"> {{ tr.assessment.get_end_date }} </td>
+                                <td> {{ tr.assessment.status }} </td>
+
+                                <td class="td-icon">
+                                    <!-- Chequea tipo de usuario para decidir que tipo de icono agregar -->
+                                    {% if user_in_course.is_student %}
+                                        <!-- Si el usuario es estudiante, revisa si la coevaluacion está pendiente -->
+                                        {% if tr.status.is_pending %}
+                                            <a href="{% url 'peer_assessment' year=tr.assessment.course.year semester=tr.assessment.course.semester code=tr.assessment.course.code.code section=tr.assessment.course.section_number id=tr.assessment.id %}"
+                                                title="Responder coevaluación"><img class="clickable-icon answer-icon wiggle" src="{% static '/coevaluacion/icon/answer-icon.png' %}" alt="Responder coevaluación" width="28" height="28"></a>
+                                        {% endif %}
+
+                                    {% else %}
+                                        <!-- Si el usuario es docente, revisa las posibles acciones a realizar -->
+                                        {% if tr.assessment.is_closed %}
+                                            <a href="#" title="Publicar resultados"><img class="clickable-icon publish-icon wiggle" src="{% static "coevaluacion/icon/publish-icon.png" %}" alt="Publicar resultados" width="28" height="28"></a>
+                                        {%  elif tr.assessment.is_published %}
+                                            <a href="#" title="Exportar resultados"><img class="clickable-icon export-icon" src="{% static "coevaluacion/icon/export-icon.png" %}" alt="Exportar resultados" width="28" height="28"></a>
+                                        {% endif %}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- FIN Tabla de coevaluaciones -->
+    </div>
+    <!-- FIN Tablas de resumen -->
+
+    {% if not user_in_course.is_student %}
+        <!-- Gestión del curso -->
+        <h4 class="d-inline-block mt-1 mb-0">Gestión del Curso</h4>
+        <div class="d-inline-block ml-2">
+            <a href="#" class="small" title="Cargar información desde archivo"><img class="clickable-icon export-icon mb-1" src="{% static "coevaluacion/icon/load-data-icon.png" %}" alt="Cargar información desde archivo" width="20" height="20">Cargar archivo...</a>
+        </div>
+        <hr/>
+
+        <div class="row">
+            <div class="col-6 mx-auto">
+                <form class="col-8 d-inline-block">
+                    <input class="form-control" type="search" placeholder="Buscar alumno..." aria-label="Buscar alumno">
+                </form>
+                <button type="button" id="add-coev-btn" class="btn btn-primary-custom m-auto">Agregar alumno</button>
+            </div>
+        </div>
+        <div class="row mt-5 mx-5">
+            <button type="button" id="add-coev-btn" class="btn btn-primary-custom float-right">Agregar grupo</button>
+        </div>
+        <div class="row">
+            {% for group in groups_list %}
+                <div class="col-5 mx-auto table-wrap table-responsive my-2">
+
+                    <table class="table table-striped table-hover mb-0">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>{{ group.name }}</th>
+                                <th>Tarea 1</th>
+                                <th>Tarea 2</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for member in group.members %}
+                                <tr>
+                                    <td>{{ member.first_name }} {{ member.last_name }}</td>
+                                    <td>5.0</td>
+                                    <td>3.9</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+
+{% endblock %}
