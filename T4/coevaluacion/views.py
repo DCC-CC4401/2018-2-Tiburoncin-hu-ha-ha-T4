@@ -6,7 +6,8 @@ from django.http import HttpResponseForbidden, HttpResponseNotFound
 from django.shortcuts import render, redirect
 
 from .queries import *
-from .models import User, UserInCourse, CoEvaluation, Course, AnswerCoEvaluation, GradesPerCoEvaluation
+from .models import User, UserInCourse, CoEvaluation, Course, \
+    AnswerCoEvaluation, GradesPerCoEvaluation, UserInGroup
 
 
 def login(request):
@@ -60,7 +61,7 @@ def logout(request):
 def profile(request, rut):
     visitor = User.objects.get(user=request.user)
 
-    is_owner = (visitor.rut == rut)
+    is_owner = visitor.compare_rut(rut)
     visitor_courses = UserInCourse.objects.filter(member=visitor)
     is_teacher = is_visitor_teacher(request)
 
@@ -160,19 +161,21 @@ def course(request, year, semester, code, section):
 
     if not visitor_in_course.is_student:
         groups = Group.objects.filter(course=requested_course)
-        active_groups = groups.filter(active=True).values_list("name").distinct()
+        usrs_in_groups = UserInGroup.objects.filter(group__in=groups, active=True)
+        active_groups = usrs_in_groups.values_list("group").distinct()
+        active_groups = Group.objects.filter(id__in=active_groups)
 
-        groups_list = list()
+        usr_in_groups_list = list()
         for group in active_groups:
-            group_members = groups.filter(name=group[0])
+            group_members = usrs_in_groups.filter(group=group)
 
             group_members_list = list()
             for group_member in group_members:
                 group_members_list.append(group_member.member)
 
-            groups_list.append({'name': group[0], 'members': group_members_list})
+            usr_in_groups_list.append({'group': group, 'members': group_members_list})
 
-        context['groups_list'] = groups_list
+        context['usr_in_groups_list'] = usr_in_groups_list
 
     return render(request, "course.html", context)
 
