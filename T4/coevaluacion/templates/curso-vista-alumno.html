@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 
+{% load static %}
 {% block content %}
 <!-- Cuerpo -->
 <div class="container"> <!-- Contenedor responsivo de Bootstrap, se adapta a la pantalla usando columnas. -->
@@ -21,6 +22,76 @@
             <div class="table-wrap table-responsive my-1"> <!-- "Envoltura" de la tabla -->
                 <table class="table table-coeval-curso table-striped table-hover mb-0"> <!-- Tabla -->
                     <!-- Encabezados de tabla (Table Headers) -->
+                    <tbody>
+                    {% for var in itervar %}
+                        {% if var.status.is_pending %}
+                            <tr class="tr-pendiente">
+                        {% else %}
+                            <tr>
+                        {% endif %}
+                    <td class="td-fecha"> {{ var.coev.get_init_date }}</td>
+                    <td>{{ var.coev.name }}</td>
+                    <td class="td-fecha"> {{ var.coev.get_end_date }}</td>
+                    <td> {{ var.status.status }} </td>
+                    {% if var.status.is_pending %}
+                        <td class="td-icon">
+                            <a href="{% url 'peer_assessment' year=var.coev.course.year semester=var.coev.course.semester code=var.coev.course.code.code section=var.coev.course.section_number id=var.coev.id %}"
+                               title="Responder coevaluación"><img class="clickable-icon answer-icon wiggle" src="{% static '/coevaluacion/icon/answer-icon.png' %}" alt="Responder coevaluación" width="28" height="28"></a>
+                        </td>
+                    {% endif %}
+                    </tr>
+
+                    {% endfor %}
+                    <tr class="tr-pendiente"> <!-- Fila destacada como Pendiente -->
+                        <!-- Fecha de inicio -->
+                        <td class="td-fecha">
+                            20:01 01/12/18
+                        </td>
+                        <!-- Título de coevaluación -->
+                        <td>Tarea final</td>
+                        <!-- Fecha de término -->
+                        <td class="td-fecha">
+                            23:59 20/12/18
+                        </td>
+                        <!-- Estado -->
+                        <td>Pendiente</td>
+                        <!-- Ícono de acción (responder) -->
+                        <td class="td-icon">
+                            <a href="#" title="Responder coevaluación"><img class="clickable-icon answer-icon wiggle" src="../../icon/answer-icon.png" alt="Responder coevaluación" width="28" height="28"></a>
+                        </td>
+                    </tr>
+                    <tr class="tr-pendiente">
+                        <td class="td-fecha">
+                            12:03 11/11/18
+                        </td>
+                        <td>Tarea con nombre muy largo que ocupa todo el espacio</td>
+                        <td class="td-fecha">
+                            23:59 21/11/18
+                        </td>
+                        <td>Pendiente</td>
+                        <td class="td-icon">
+                            <a href="#" title="Responder coevaluación"><img class="clickable-icon answer-icon wiggle" src="../../icon/answer-icon.png" alt="Responder coevaluación" width="28" height="28"></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="td-fecha">15:15 10/11/18</td>
+                        <td>Tarea 2</td>
+                        <td class="td-fecha">23:59 19/11/18</td>
+                        <td>Cerrada</td>
+                        <td class="td-icon">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="td-fecha">03:53 20/10/18</td>
+                        <td>Tarea 1</td>
+                        <td class="td-fecha">23:59 27/10/18</td>
+                        <td>Publicada</td>
+                        <td class="td-icon">
+                        </td>
+                    </tr>
+                    </tbody>
+
+                    <!-- Cuerpo de tabla (Table Data) -->
                     <thead class="thead-light">
                         <tr> <!-- Fila (Table Row) -->
                             <th class="th-fecha">Fecha inicio</th>
@@ -30,57 +101,6 @@
                             <th class="th-iconos"></th>
                         </tr>
                     </thead>
-
-                    <!-- Cuerpo de tabla (Table Data) -->
-                    <tbody>
-                        <tr class="tr-pendiente"> <!-- Fila destacada como Pendiente -->
-                            <!-- Fecha de inicio -->
-                            <td class="td-fecha">
-                                20:01 01/12/18
-                            </td>
-                            <!-- Título de coevaluación -->
-                            <td>Tarea final</td>
-                            <!-- Fecha de término -->
-                            <td class="td-fecha">
-                                23:59 20/12/18
-                            </td>
-                            <!-- Estado -->
-                            <td>Pendiente</td>
-                            <!-- Ícono de acción (responder) -->
-                            <td class="td-icon">
-                                <a href="#" title="Responder coevaluación"><img class="clickable-icon answer-icon wiggle" src="../../icon/answer-icon.png" alt="Responder coevaluación" width="28" height="28"></a>
-                            </td>
-                        </tr>
-                        <tr class="tr-pendiente">
-                            <td class="td-fecha">
-                                12:03 11/11/18
-                            </td>
-                            <td>Tarea con nombre muy largo que ocupa todo el espacio</td>
-                            <td class="td-fecha">
-                                23:59 21/11/18
-                            </td>
-                            <td>Pendiente</td>
-                            <td class="td-icon">
-                                <a href="#" title="Responder coevaluación"><img class="clickable-icon answer-icon wiggle" src="../../icon/answer-icon.png" alt="Responder coevaluación" width="28" height="28"></a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="td-fecha">15:15 10/11/18</td>
-                            <td>Tarea 2</td>
-                            <td class="td-fecha">23:59 19/11/18</td>
-                            <td>Cerrada</td>
-                            <td class="td-icon">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="td-fecha">03:53 20/10/18</td>
-                            <td>Tarea 1</td>
-                            <td class="td-fecha">23:59 27/10/18</td>
-                            <td>Publicada</td>
-                            <td class="td-icon">
-                            </td>
-                        </tr>
-                    </tbody>
                 </table>
             </div>
         </div>

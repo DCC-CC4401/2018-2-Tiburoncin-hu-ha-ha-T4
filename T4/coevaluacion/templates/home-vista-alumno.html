@@ -31,7 +31,7 @@
                         {% for coev in coevsInCourse %}
                         <tr class="clickable-row" data-href='{% url "peer_assessment" year=coev.co_evaluation.course.year semester=coev.co_evaluation.course.semester code=coev.co_evaluation.course.code.code section=coev.co_evaluation.course.section_number semester=coev.co_evaluation.course.semester id=coev.co_evaluation.id %}'>
                             <td class="td-fecha">{{ coev.co_evaluation.init_date }}</td>
-                            <td><a href="{% url 'peer_assessment' year=coev.co_evaluation.course.year semester=coev.co_evaluation.course.semester code=coev.co_evaluation.course.code.code section=coev.co_evaluation.course.section_number semester=coev.co_evaluation.course.semester id=coev.id %}">{{ coev.co_evaluation.name }}</a></td>
+                            <td><a href="{% url 'peer_assessment' year=coev.co_evaluation.course.year semester=coev.co_evaluation.course.semester code=coev.co_evaluation.course.code.code section=coev.co_evaluation.course.section_number semester=coev.co_evaluation.course.semester id=coev.co_evaluation.id %}">{{ coev.co_evaluation.name }}</a></td>
                             <td class="td-curso-full">
                                 {% if coev.user.rol == coev.user.PROFESOR %}
                                 <div class="cargos cargos-profesor tooltip-custom"></div>

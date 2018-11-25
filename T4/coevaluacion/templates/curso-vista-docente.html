@@ -6,8 +6,14 @@
 
     <h3 class="d-inline-block page-title">Ficha de Curso</h3>
     <h5 class="mb-3">
+        {% if usrcourse.is_teacher %}
         <div class="cargos cargos-profesor"></div>
-        CC4401-1 Ingeniería de Software 2018, Primavera
+        {% elif usrcourse.is_assistant_teacher %}
+        <div class="cargos cargos-auxiliar"></div>
+        {% else%}
+        <div class="cargos cargos-ayudante"></div>
+        {% endif %}
+        {{ course }}
     </h5>
     <hr/>
     <!-- Tablas de resumen -->
@@ -32,6 +38,27 @@
 
                     <!-- Cuerpo de tabla (Table Data) -->
                     <tbody>
+                        {% for coev in coevs %}
+                            <tr>
+                                <td class="td-fecha">
+                                    {{ coev.get_init_date }}
+                                </td>
+                                <td>
+                                    {{ coev.name }}
+                                </td>
+                                <td class="td-fecha">
+                                    {{ coev.get_end_date }}
+                                </td>
+                                <td> {{ coev.status }}</td>
+                                <td class="td-icon">
+                                    {% if coev.is_closed %}
+                                        <a href="#" title="Publicar resultados"><img class="clickable-icon publish-icon wiggle" src="{% static "coevaluacion/icon/publish-icon.png" %}" alt="Publicar resultados" width="28" height="28"></a>
+                                    {%  elif coev.is_published %}
+                                        <a href="#" title="Exportar resultados"><img class="clickable-icon export-icon" src="{% static "coevaluacion/icon/export-icon.png" %}" alt="Exportar resultados" width="28" height="28"></a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
                         <tr>
                             <!-- Fecha de inicio -->
                             <td class="td-fecha">
@@ -109,26 +136,33 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr id="active-estudiante" onclick="showGestionEstudiante()"><td>Estudiante 1 (clickeable)</td></tr>
-                        <tr><td>Estudiante 2</td></tr>
-                        <tr><td>Estudiante 3</td></tr>
-                        <tr><td>Estudiante 4</td></tr>
-                        <tr><td>Estudiante 5</td></tr>
-                        <tr><td>Estudiante 6</td></tr>
-                        <tr><td>Estudiante 7</td></tr>
-                        <tr><td>Estudiante 8</td></tr>
-                        <tr><td>Estudiante 9</td></tr>
-                        <tr><td>Estudiante 10</td></tr>
-                        <tr><td>Estudiante 11</td></tr>
-                        <tr><td>Estudiante 12</td></tr>
-                        <tr><td>Estudiante 13</td></tr>
-                        <tr><td>Estudiante 14</td></tr>
-                        <tr><td>Estudiante 15</td></tr>
-                        <tr><td>Estudiante 16</td></tr>
-                        <tr><td>Estudiante 17</td></tr>
-                        <tr><td>Estudiante 18</td></tr>
-                        <tr><td>Estudiante 19</td></tr>
-                        <tr><td>Estudiante 20</td></tr>
+                        {% for member in members %}
+                            {% if member.is_student %}
+                                <tr id="{{ member.id }}" onclick="showGestionEstudiante()">
+                                <td>{{ member.member }}</td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+{#                        <tr id="{{ members.id }}" onclick="showGestionEstudiante()"><td>Estudiante 1 (clickeable)</td></tr>#}
+{#                        <tr><td>Estudiante 2</td></tr>#}
+{#                        <tr><td>Estudiante 3</td></tr>#}
+{#                        <tr><td>Estudiante 4</td></tr>#}
+{#                        <tr><td>Estudiante 5</td></tr>#}
+{#                        <tr><td>Estudiante 6</td></tr>#}
+{#                        <tr><td>Estudiante 7</td></tr>#}
+{#                        <tr><td>Estudiante 8</td></tr>#}
+{#                        <tr><td>Estudiante 9</td></tr>#}
+{#                        <tr><td>Estudiante 10</td></tr>#}
+{#                        <tr><td>Estudiante 11</td></tr>#}
+{#                        <tr><td>Estudiante 12</td></tr>#}
+{#                        <tr><td>Estudiante 13</td></tr>#}
+{#                        <tr><td>Estudiante 14</td></tr>#}
+{#                        <tr><td>Estudiante 15</td></tr>#}
+{#                        <tr><td>Estudiante 16</td></tr>#}
+{#                        <tr><td>Estudiante 17</td></tr>#}
+{#                        <tr><td>Estudiante 18</td></tr>#}
+{#                        <tr><td>Estudiante 19</td></tr>#}
+{#                        <tr><td>Estudiante 20</td></tr>#}
                     </tbody>
                 </table>
             </div>
@@ -151,6 +185,9 @@
                         </tr>
                     </thead>
                     <tbody>
+{#                        {% for group in groups %}#}
+{#                            {% if  %}#}
+{#                        {% endfor %}#}
                         <tr id="active-grupo" onclick="showGestionGrupo()"><td>1</td><td>Nombre grupo 1 (clickeable)</td></tr>
                         <tr><td>2</td><td>Nombre grupo 2</td></tr>
                         <tr><td>3</td><td>Nombre grupo 3</td></tr>

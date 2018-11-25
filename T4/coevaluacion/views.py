@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models.query import QuerySet
 from django.shortcuts import render, redirect
 
+from .queries import *
 from .models import User, UserInCourse, CoEvaluation, Course, AnswerCoEvaluation, NamesPerCode
 
 
@@ -82,25 +83,23 @@ def profile(request, rut):
     return render(request, 'profile.html', context)
 
 
+def _get_itervar(coevs, visitor_member):
+    itervar = []
+    for coev in coevs:
+        status = AnswerCoEvaluation.objects.get(user=visitor_member, co_evaluation=coev)
+        itervar.append({"coev": coev, "status": status})
+    return itervar
+
+
 @login_required
 def course(request, year, semester, code, section):
-    visitor = User.objects.get(user=request.user)
-    code_name = NamesPerCode.objects.get(code=code)
-    course = Course.objects.get(code=code_name, section_number=int(section),
-                                year=int(year), semester=int(semester))
-    coevs = CoEvaluation.objects.filter(course=course)
-    members = UserInCourse.objects.filter(course=course)
-    context = {
-        'visitor': visitor,
-        'course': course,
-        'members': members,
-        'coevs': coevs
-    }
-
-    if members.filter(member=visitor).count() == 1:
-        if members.get(course=course, member=visitor).rol == "Estudiante":
+    context, c = course_base_query(request, year, semester, code, section)
+    if c == 1:
+        if context["usrcourse"].is_student:
+            context = course_student_query(context)
             return render(request, "curso-vista-alumno.html", context)
         else:
+            context = course_teacher_query(context)
             return render(request, "curso-vista-docente.html", context)
 
     else:

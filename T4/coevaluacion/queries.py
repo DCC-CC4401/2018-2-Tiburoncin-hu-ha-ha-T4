@@ -81,14 +81,53 @@ def latest_coev_with_status(user: User):
 
     related_coevs = CoEvaluation.objects.filter(course__in=usr_courses)
     related_coevs = related_coevs.order_by("-end_date")
-    N = 10 if related_coevs.count() > 10 else related_coevs.count()
-    s = []
-    for i in range(N):
+    status = []
+    for i in range(related_coevs.count()):
         usr_in_course = UserInCourse.objects.get(course=related_coevs[i].course,
                                                  member=user)
-        s.append(status_coev(usr_in_course, related_coevs[i]))
+        status.append(status_coev(usr_in_course, related_coevs[i]))
 
-    return related_coevs, s
+    return related_coevs, status
+
+
+def ten_latest_coev(user: User):
+    related_coevs, status = latest_coev_with_status(user)
+    if related_coevs.count() < 10:
+        return related_coevs, status
+    else:
+        return related_coevs[:10], status[:10]
+
+
+def course_base_query(request, year, semester, code, section):
+    visitor = User.objects.get(user=request.user)
+    code_name = NamesPerCode.objects.get(code=code)
+    course = Course.objects.get(code=code_name, section_number=int(section),
+                                year=int(year), semester=int(semester))
+    coevs = CoEvaluation.objects.filter(course=course)
+    members = UserInCourse.objects.filter(course=course)
+    visitor_member = members.filter(member=visitor)
+    context = {'user': visitor, 'course': course, 'members': members,
+               "usrcourse": visitor_member[0], 'coevs': coevs}
+    return context, visitor_member.count()
+
+
+def course_student_query(context):
+    itervar = []
+    for coev in context["coevs"]:
+        status = AnswerCoEvaluation.objects.get(user=context["usrcourse"], co_evaluation=coev)
+        itervar.append({"coev": coev, "status": status})
+    context["itervar"] = itervar
+    return context
+
+
+def course_teacher_query(context):
+    groups = Group.objects.filter(course=context["course"])
+    actives = groups.filter(active=True).values_list("name").distinct()
+    context["groups"] = groups
+    context["actives"] = actives
+    return context
+
+
 
 
 
