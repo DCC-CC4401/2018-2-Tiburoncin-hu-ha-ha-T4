@@ -97,6 +97,10 @@ def create_course(names_code):
     code.append(names_code[2])
     code.append(names_code[3])
     code.append(names_code[5])
+    for i, j in zip([2, 3, 5], [7, 8, 9]):
+        if semester[i] == semester[j]:
+            section[j] = 2
+
     table = []
     for c, sec, y, sem, d in zip(code, section, year, semester, date):
         tmp = Course()
