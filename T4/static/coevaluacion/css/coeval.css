@@ -222,16 +222,16 @@ td.td-icon {
 .th-estado { width: 4.5rem }
 .th-iconos { width: 2rem }
 
-.table-notas-perfil .th-fecha { width: 4.5rem; }
-.table-notas-perfil .th-titulo { width: 11rem; }
+.table-notas-perfil .th-fecha { width: 6rem; }
+.table-notas-perfil .th-titulo { width: 10rem; }
 .table-notas-perfil .th-nota { width: 3rem; text-align: center; }
 
-.table-coeval-curso .th-fecha { width: 6.2rem; }
+.table-coeval-curso .th-fecha { width: 7.2rem; }
 .table-coeval-curso .th-titulo { width: 25rem; }
 .table-coeval-curso .th-estado { width: 4.5rem; }
 .table-coeval-curso .th-iconos { width: 2rem; }
 
-.table-cursos .th-semestre, .table-cursos-perfil .th-semestre { width: 3.8rem; }
+.table-cursos .th-semestre, .table-cursos-perfil .th-semestre { width: 5rem; }
 .table-cursos-perfil .th-rol { width: 2.4rem; }
 
 .table-grupos-curso tbody,
