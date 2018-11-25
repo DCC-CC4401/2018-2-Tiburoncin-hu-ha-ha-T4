@@ -87,12 +87,12 @@ def profile(request, rut):
         is_common_course = len(visitor_courses.filter(course=owner_course.course)) != 0
 
         if is_common_course:
-            visitor = visitor_courses.filter(course=owner_course.course)[0]
+            visitor_in_course = visitor_courses.filter(course=owner_course.course)[0]
         else:
-            visitor = None
+            visitor_in_course = None
 
-        if (owner_course.course.id,) in list(visitor_courses.values_list("course")) and not visitor.is_student:
-            courses.append({'course': owner_course, 'visitor_rol': visitor.rol})
+        if (owner_course.course.id,) in list(visitor_courses.values_list("course")) and not visitor_in_course.is_student:
+            courses.append({'course': owner_course, 'visitor_rol': visitor_in_course.rol})
             is_owners_teacher = True
         else:
             courses.append({'course': owner_course, 'visitor_rol': None})

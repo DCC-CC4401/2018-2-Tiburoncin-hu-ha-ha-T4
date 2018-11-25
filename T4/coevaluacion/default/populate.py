@@ -54,8 +54,8 @@ def create_user():
     email = ['email{}@gmail.com'.format(i) for i in range(1, 11)]
     password = ['123456' + str(i) for i in range(1, 11)]
     user_type = ['AD'] + ['NP'] * 9
-    rut = ["1123{}444-2".format(i) for i in range(0, 5)] + \
-          ["2223{}111-1".format(i) for i in range(0, 5)]
+    rut = ["11.23{}.444-2".format(i) for i in range(0, 5)] + \
+          ["22.23{}.111-1".format(i) for i in range(0, 5)]
     table = []
     for f, l, e, p, u, r in zip(first_names, last_names, email, password, user_type, rut):
         user = Auth_User.objects.create_user(username=r, password=p)
