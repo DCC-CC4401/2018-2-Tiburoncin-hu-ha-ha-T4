@@ -22,21 +22,18 @@ class User(models.Model):
                                  default=NATURAL_PERSON,)
 
     def __str__(self):
-        return "%s, %s (%s)" % (self.last_name, self.first_name, self.user_type)
+        return "%s, %s" % (self.last_name, self.first_name)
 
     def not_admin(self):
         return self.user_type == self.NATURAL_PERSON
 
 
 class NamesPerCode(models.Model):
-    code = models.CharField(max_length=6)
+    code = models.CharField(max_length=6, primary_key=True)
     name = models.CharField(max_length=40)
 
     def __str__(self):
         return "%s: %s" % (self.name, self.code)
-
-    class Meta:
-        unique_together = (('code', 'name'),)
 
 
 class Course(models.Model):
@@ -55,8 +52,12 @@ class Course(models.Model):
     date = models.DateTimeField(default=datetime.now)
 
     def __str__(self):
-        return "%s-%s, %s %s" % (self.code, self.section_number,
-                                 self.semester, self.year)
+        if self.semester == 1:
+            sem = "Otoño"
+        else:
+            sem = "Primavera"
+        return "%s-%s %s %s, %s" % (self.code.code, self.section_number,
+                                    self.code.name, self.year, sem)
 
     class Meta:
         unique_together = (('code', 'section_number', 'year', 'semester'),)
@@ -97,6 +98,22 @@ class UserInCourse(models.Model):
     def __str__(self):
         return "%s; %s (%s)" % (self.member, self.course, self.rol)
 
+    @property
+    def is_student(self):
+        return self.rol == self.ESTUDIANTE
+
+    @property
+    def is_assistant_teacher(self):
+        return self.rol == self.AUXILIAR_TEACHER
+
+    @property
+    def is_assistant(self):
+        return self.rol == self.AYUDANTE
+
+    @property
+    def is_teacher(self):
+        return self.rol == self.PROFESOR
+
     class Meta:
         unique_together = (('member', 'course'),)
 
@@ -109,6 +126,10 @@ class Group(models.Model):
 
     def __str__(self):
         return "%s (%s): %s" % (self.name, self.course, self.member)
+
+    @property
+    def is_active(self):
+        return self.active
 
     class Meta:
         unique_together = (("course", "name", "member", "active"),)
@@ -126,6 +147,10 @@ class CoEvaluation(models.Model):
     end_date = models.DateTimeField(default=date_end)
     publish = models.BooleanField(default=False)
 
+    OPEN = "Abierta"
+    CLOSED = "Cerrada"
+    PUBLISH = "Publicada"
+
     def save(self, **kwargs):
         super(CoEvaluation, self).save(**kwargs)
         usersInCourse = UserInCourse.objects.filter(course=self.course)
@@ -141,6 +166,37 @@ class CoEvaluation(models.Model):
         return self.init_date < datetime.now(tz=timezone.get_current_timezone()) \
                and not datetime.now(tz=timezone.get_current_timezone()) > self.end_date
 
+    @property
+    def is_open(self):
+        return self.open()
+
+    @property
+    def is_closed(self):
+        return not self.open()
+
+    @property
+    def is_published(self):
+        return self.publish
+
+    @property
+    def status(self):
+        if self.is_open:
+            return self.OPEN
+        elif self.is_published:
+            return self.PUBLISH
+        else:
+            return self.CLOSED
+
+    @property
+    def get_end_date(self):
+        tmp = self.end_date.strftime("%H:%M %d/%m/%Y")
+        return tmp[:-4] + tmp[-2:]
+
+    @property
+    def get_init_date(self):
+        tmp = self.init_date.strftime("%H:%M %d/%m/%Y")
+        return tmp[:-4] + tmp[-2:]
+
     def __str__(self):
         return "%s, %s (%s - %s)" % (self.course, self.name, self.init_date, self.end_date)
 
@@ -152,8 +208,6 @@ class AnswerCoEvaluation(models.Model):
 
     ANSWERED = "Respondida"
     PENDENT = "Pendiente"
-    CLOSED = "Cerrado"
-    PUBLISH = "Publicada"
 
     STATE_TYPE = (
         (PENDENT, "Pendiente"),
@@ -164,6 +218,39 @@ class AnswerCoEvaluation(models.Model):
 
     def __str__(self):
         return "%s: %s (%s)" % (self.user, self.co_evaluation, self.state)
+
+    @property
+    def is_pending(self):
+        return self.state == self.PENDENT
+
+    @property
+    def is_answered(self):
+        return self.state == self.ANSWERED
+
+    @property
+    def is_closed(self):
+        return not self.co_evaluation.open()
+
+    @property
+    def is_open(self):
+        return self.co_evaluation.open()
+
+    @property
+    def is_published(self):
+        return self.co_evaluation.is_published()
+
+    @property
+    def status(self):
+        if self.is_answered:
+            return self.ANSWERED
+        elif self.is_closed:
+            return CoEvaluation.CLOSED
+        elif self.is_pending:
+            return self.PENDENT
+        elif self.is_open:
+            return CoEvaluation.OPEN
+        else:
+            return CoEvaluation.CLOSED
 
     class Meta:
         unique_together = (("user", "co_evaluation"),)

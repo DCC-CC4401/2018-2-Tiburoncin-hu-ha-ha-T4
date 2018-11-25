@@ -31,14 +31,14 @@
                         {% for coev in coevsInCourse %}
                         <tr class="clickable-row" data-href='{% url "peer_assessment" year=coev.co_evaluation.course.year semester=coev.co_evaluation.course.semester code=coev.co_evaluation.course.code.code section=coev.co_evaluation.course.section_number semester=coev.co_evaluation.course.semester id=coev.co_evaluation.id %}'>
                             <td class="td-fecha">{{ coev.co_evaluation.init_date }}</td>
-                            <td><a href="{% url "peer_assessment" year=coev.co_evaluation.course.year semester=coev.co_evaluation.course.semester code=coev.co_evaluation.course.code.code section=coev.co_evaluation.course.section_number semester=coev.co_evaluation.course.semester id=coev.id %}">{{ coev.co_evaluation.name }}</a></td>
+                            <td><a href="{% url 'peer_assessment' year=coev.co_evaluation.course.year semester=coev.co_evaluation.course.semester code=coev.co_evaluation.course.code.code section=coev.co_evaluation.course.section_number semester=coev.co_evaluation.course.semester id=coev.co_evaluation.id %}">{{ coev.co_evaluation.name }}</a></td>
                             <td class="td-curso-full">
                                 {% if coev.user.rol == coev.user.PROFESOR %}
-                                <div class="cargos cargos-profesor tooltip-custom">
+                                <div class="cargos cargos-profesor tooltip-custom"></div>
                                 {% elif coev.user.rol == coev.user.AUXILIAR_TEACHER %}
-                                <div class="cargos cargos-auxiliar tooltip-custom">
+                                <div class="cargos cargos-auxiliar tooltip-custom"></div>
                                 {% elif coev.user.rol == coev.user.AYUDANTE %}
-                                <div class="cargos cargos-ayudante tooltip-custom">
+                                <div class="cargos cargos-ayudante tooltip-custom"></div>
                                 {% else %}
                                 <div class="cargos cargos-alumno tooltip-custom">
                                 {% endif %}
@@ -53,7 +53,7 @@
                             <td>{{ coev.state }}</td>
                             {% if coev.state == coev.PENDENT %}
                             <td class="td-icon">
-                                <a href="#" title="Responder coevaluación"><img class="clickable-icon answer-icon wiggle" src="{% static "/coevaluacion/icon/answer-icon.png" %}" alt="Responder coevaluación" width="28" height="28"></a>
+                                <a href="#" title="Responder coevaluación"><img class="clickable-icon answer-icon wiggle" src="{% static '/coevaluacion/icon/answer-icon.png' %}" alt="Responder coevaluación" width="28" height="28"></a>
                             </td>
                             {% else %}
                             <td></td>
@@ -118,14 +118,15 @@
                             <td>2017-1</td>
                         </tr>
                     {% for uic in userInCourse %}
-                        <tr>
-                            <td class="td-curso-full">
+                        <tr class="clickable-row" data-href='{% url "course" year=uic.course.year semester=uic.course.semester code=uic.course.code.code section=uic.course.section_number%}'>
+                            <!--<td><a href="{% url "course" year=uic.course.year semester=uic.course.semester code=uic.course.code.code section=uic.course.section_number%}"></a></td>-->
+                            <td class="td-curso-full" >
                                 {% if uic.rol == uic.PROFESOR %}
-                                <div class="cargos cargos-profesor cargos tooltip-custom">
+                                <div class="cargos cargos-profesor cargos tooltip-custom"></div>
                                 {% elif uic.rol == uic.AUXILIAR_TEACHER %}
-                                <div class="cargos cargos-auxiliar cargos tooltip-custom">
+                                <div class="cargos cargos-auxiliar cargos tooltip-custom"></div>
                                 {% elif uic.rol == uic.AYUDANTE %}
-                                <div class="cargos cargos-ayudante cargos tooltip-custom">
+                                <div class="cargos cargos-ayudante cargos tooltip-custom"></div>
                                 {% else %}
                                 <div class="cargos cargos-alumno cargos tooltip-custom">
                                 {% endif %}
@@ -136,6 +137,7 @@
                                 <span class="curso-codigo">{{ uic.course.code.code }}-{{ uic.course.section_number }}</span>
                             </td>
                             <td>{{ uic.course.year }}-{{ uic.course.semester }}</td>
+
                         </tr>
                     {% endfor %}
 
