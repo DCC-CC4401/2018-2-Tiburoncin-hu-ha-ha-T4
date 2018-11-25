@@ -127,7 +127,21 @@ def profile(request, rut):
 
 @login_required
 def course(request, year, semester, code, section):
+    logged_user = User.objects.get(user=request.user)
+
+    logged_courses = UserInCourse.objects.filter(member=logged_user)
+
+    is_teacher = False
+    for course in logged_courses:
+        if not course.is_student:
+            is_teacher = True
+            break
+
     context, c = course_base_query(request, year, semester, code, section)
+
+    context['is_teacher'] = is_teacher
+    context['user'] = logged_user
+
     if c == 1:
         if context["usrcourse"].is_student:
             context = course_student_query(context)
