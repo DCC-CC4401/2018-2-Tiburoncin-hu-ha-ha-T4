@@ -39,6 +39,25 @@ def home(request):
         if logged_course.rol != "Estudiante":
             is_teacher = True
 
+    list_coevs = list()
+
+    is_teacher = False
+    for logged_course in logged_courses:
+        coevs = CoEvaluation.objects.filter(course=logged_course.course)
+        assessments = assessments | coevs
+        if logged_course.rol != "Estudiante":
+            is_teacher = True
+            ansCoev = None
+        for coev in coevs:
+            if logged_course.rol != "Estudiante":
+                ansCoev = None
+                ansCoevID = None
+            else:
+                ansCoev = AnswerCoEvaluation.objects.get(user=logged_course, co_evaluation=coev)
+                ansCoevID = ansCoev.id
+            list_coevs.append({'coev': coev, 'ansCoev': ansCoev, 'ansCoevID': ansCoevID, 'rol': logged_course.rol,
+                               'status': status_coev(logged_course, coev)})
+
     course_assessments = AnswerCoEvaluation.objects.filter(user=0)
     for logged_course in logged_courses:
         course_assessments = course_assessments | AnswerCoEvaluation.objects.filter(user=logged_course)
@@ -46,7 +65,8 @@ def home(request):
                'is_teacher': is_teacher,
                'userInCourse': logged_courses,
                'coevs': assessments,
-               'coevsInCourse': course_assessments}
+               'coevsInCourse': course_assessments,
+               'list_coevs': list_coevs}
 
     return render(request, 'home.html', context)
 
@@ -192,9 +212,12 @@ def peer_assessment(request, year, semester, code, section, id):
             break
 
     assessment = AnswerCoEvaluation.objects.get(id=id)
+    group = UserInGroup.objects.get(member=assessment.user.member, group__course=assessment.co_evaluation.course).group
+    usersInGroup = UserInGroup.objects.filter(group=group).exclude(member=assessment.user.member)
     context = {
         'user': logged_user,
         'is_teacher': is_teacher,
         'ansCoev': assessment,
+        'usersInGroup': usersInGroup
     }
     return render(request, 'coevaluacion-vista-alumno.html', context)

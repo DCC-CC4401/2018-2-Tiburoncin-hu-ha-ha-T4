@@ -28,38 +28,41 @@
 
                     <!-- Cuerpo de tabla (Table Data) -->
                     <tbody>
-                        {% for coev in coevsInCourse %}
-                        <tr class="clickable-row" data-href='{% url "peer_assessment" year=coev.co_evaluation.course.year semester=coev.co_evaluation.course.semester code=coev.co_evaluation.course.code.code section=coev.co_evaluation.course.section_number semester=coev.co_evaluation.course.semester id=coev.co_evaluation.id %}'>
-                            <td class="td-fecha">{{ coev.co_evaluation.init_date }}</td>
-                            <td><a href="{% url 'peer_assessment' year=coev.co_evaluation.course.year semester=coev.co_evaluation.course.semester code=coev.co_evaluation.course.code.code section=coev.co_evaluation.course.section_number semester=coev.co_evaluation.course.semester id=coev.co_evaluation.id %}">{{ coev.co_evaluation.name }}</a></td>
+                        {% for coev in list_coevs %}
+                        <tr>
+                            <td class="td-fecha">{{ coev.coev.init_date }}</td>
+                            <td>{{ coev.coev.name }}</td>
                             <td class="td-curso-full">
-                                {% if coev.user.rol == coev.user.PROFESOR %}
+                                {% if coev.rol == "Profesor" %}
                                 <div class="cargos cargos-profesor tooltip-custom"></div>
-                                {% elif coev.user.rol == coev.user.AUXILIAR_TEACHER %}
+                                {% elif coev.rol == 'Profesor auxiliar' %}
                                 <div class="cargos cargos-auxiliar tooltip-custom"></div>
-                                {% elif coev.user.rol == coev.user.AYUDANTE %}
+                                {% elif coev.rol == 'Ayudante' %}
                                 <div class="cargos cargos-ayudante tooltip-custom"></div>
                                 {% else %}
                                 <div class="cargos cargos-alumno tooltip-custom">
                                 {% endif %}
                                     <span class="tooltiptext"></span>
                                 </div>
-                                <span class="curso-nombre">{{ coev.co_evaluation.course.code.name }}</span>
+                                <span class="curso-nombre">{{ coev.coev.course.code.name }}</span>
                                 <br>
-                                <span class="curso-codigo">{{ coev.co_evaluation.course.code.code }}</span>
+                                <span class="curso-codigo">{{ coev.coev.course.code.code }}</span>
                             </td>
-                            <td>{{ coev.co_evaluation.course.year }}</td>
-                            <td class="td-fecha">{{ coev.co_evaluation.end_date }}</td>
-                            <td>{{ coev.state }}</td>
-                            {% if coev.state == coev.PENDENT %}
+                            <td>{{ coev.coev.course.year }}</td>
+                            <td class="td-fecha">{{ coev.coev.end_date }}</td>
+                            <td>{{ coev.status }}</td>
+                            {% if coev.status == "Pendiente" %}
                             <td class="td-icon">
-                                <a href="#" title="Responder coevaluación"><img class="clickable-icon answer-icon wiggle" src="{% static '/coevaluacion/icon/answer-icon.png' %}" alt="Responder coevaluación" width="28" height="28"></a>
+                                <a href="{% url 'peer_assessment' year=coev.coev.course.year semester=coev.coev.course.semester code=coev.coev.course.code.code section=coev.coev.course.section_number semester=coev.coev.course.semester id=coev.ansCoevID %}" title="Responder coevaluación">
+                                    <img class="clickable-icon answer-icon wiggle" src="{% static '/coevaluacion/icon/answer-icon.png' %}" alt="Responder coevaluación" width="28" height="28">
+                                </a>
                             </td>
                             {% else %}
                             <td></td>
                             {% endif %}
                         </tr>
                         {% endfor %}
+
 
                         <!-- Filas vacías, placeholder -->
                         <tr style="height: 38px;"><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
