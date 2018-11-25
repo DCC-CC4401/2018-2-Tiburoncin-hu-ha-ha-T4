@@ -111,7 +111,7 @@
                                     {% for grade in c.grades %}
                                         <tr>
                                         <!-- Fecha de publicación -->
-                                        <td class="td-fecha">{{ grade.co_evaluation.init_date }}</td>
+                                        <td class="td-fecha">{{ grade.co_evaluation.get_init_date }}</td>
                                         <!-- Título de coevaluación -->
                                         <td>{{ grade.co_evaluation.name }}</td>
                                         <!-- Nota -->

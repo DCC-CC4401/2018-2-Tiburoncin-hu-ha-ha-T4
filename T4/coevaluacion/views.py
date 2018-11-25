@@ -74,13 +74,9 @@ def profile(request, rut):
     courses = list()
 
     for owner_course in owner_courses:
-        print(owner_course.course.code.code)
-
-    for owner_course in owner_courses:
-
         visitor_rol = logged_courses.filter(course=owner_course.course)
         visitor_rol = visitor_rol[0].rol if visitor_rol else ""
-
+        print(owner_course.course.code.name)
         if (owner_course.course.id,) in list(logged_courses.values_list("course")) and visitor_rol != "Estudiante":
             courses.append({'course': owner_course, 'visitor_rol': visitor_rol})
         else:
