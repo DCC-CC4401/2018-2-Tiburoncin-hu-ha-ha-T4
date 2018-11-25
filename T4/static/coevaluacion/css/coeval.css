@@ -9,6 +9,11 @@ body {
 	margin-bottom: 0.2rem;
 }
 
+.error-message {
+	margin-top: 10%;
+	text-align: center;
+}
+
 #add-coev-form,
 #add-curso-form,
 #cambiar-contrasena,
@@ -535,3 +540,5 @@ button:active > .clickable-icon {
 	60% {transform: translateY(0px) rotate(0deg)}
 	100% {transform: translateY(0px) rotate(0deg)}
 }
+
+

@@ -4,14 +4,14 @@
 <!-- Cuerpo -->
 <div class="container"> <!-- Contenedor responsivo, se adapta a la pantalla con puntos de quiebre. -->
 
-    <h3 class="d-inline-block page-title">Ficha de Alumno/a</h3>
+    <h3 class="d-inline-block page-title">Ficha de Usuario</h3>
     <hr/>
     <!-- Contenido -->
     <div class="row">
 
         <!-- Perfil -->
         <div class="col-md-4 mb-3">
-            <h4 class="d-inline-block mt-1">Tu Perfil</h4>
+            <h4 class="d-inline-block mt-1">Perfil</h4>
             <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">Nombre</h6>
             <span>{{ profile_user.first_name }} {{ user.last_name }}</span>
             <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">RUT</h6>
@@ -27,7 +27,7 @@
 
         <!-- Tabla de cursos -->
         <div class="col-md-4 mb-3">
-            <h4 class="d-inline-block mt-1">Tus Cursos</h4>
+            <h4 class="d-inline-block mt-1">Cursos</h4>
 
             <div class="table-wrap table-responsive my-1">
                 <table class="table table-cursos-perfil table-striped table-hover mb-0">
@@ -92,8 +92,8 @@
             {% for c in courses %}
                 {% if  c.grades|length  %}
                     <div id="notas-resumen-{{ c.course_index }}" class="notas-resumen">
-                        <h4 class="d-inline-block mt-1">Tus Notas</h4>
-                        <h5 class="float-right mb-0 mt-2 text-muted" id="currentCurso">CC5402-1, 2018-2</h5>
+                        <h4 class="d-inline-block mt-1">Notas</h4>
+                        <h5 class="float-right mb-0 mt-2 text-muted" id="currentCurso">{{ c.course.course.code.code }}, {{ c.course.course.year }}-{{ c.course.course.semester }}</h5>
 
                         <div class="table-wrap table-responsive my-1"> <!-- "Envoltura" de la tabla -->
                             <table class="table table-notas-perfil table-striped table-hover mb-0"> <!-- Tabla -->

@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseForbidden, HttpResponseNotFound
 from django.shortcuts import render, redirect
 
 from .queries import *
@@ -57,30 +58,51 @@ def logout(request):
 
 @login_required
 def profile(request, rut):
-    profile_user = User.objects.get(rut=rut)
     logged_user = User.objects.get(user=request.user)
 
     owner = (logged_user.rut == rut)
-
-    owner_courses = UserInCourse.objects.filter(member=profile_user)
     logged_courses = UserInCourse.objects.filter(member=logged_user)
 
     is_teacher = False
-    for logged_course in logged_courses:
-        if logged_course.rol != "Estudiante":
+    for course in logged_courses:
+        if not course.is_student:
             is_teacher = True
             break
 
+    try:
+        profile_user = User.objects.get(rut=rut)
+    except User.DoesNotExist:
+        context = {
+            'user': logged_user,
+            'is_teacher': is_teacher,
+        }
+        if not is_teacher:
+            return render(request, "403.html", context)
+        else:
+
+            return render(request, "404.html", context)
+
+    owner_courses = UserInCourse.objects.filter(member=profile_user)
+
     courses = list()
 
+    is_owners_teacher = False
     for owner_course in owner_courses:
-        visitor_rol = logged_courses.filter(course=owner_course.course)
-        visitor_rol = visitor_rol[0].rol if visitor_rol else ""
-        print(owner_course.course.code.name)
-        if (owner_course.course.id,) in list(logged_courses.values_list("course")) and visitor_rol != "Estudiante":
-            courses.append({'course': owner_course, 'visitor_rol': visitor_rol})
+        is_common_course = len(logged_courses.filter(course=owner_course.course)) != 0
+
+        if is_common_course:
+            visitor = logged_courses.filter(course=owner_course.course)[0]
+        else:
+            visitor = None
+
+        if (owner_course.course.id,) in list(logged_courses.values_list("course")) and not visitor.is_student:
+            courses.append({'course': owner_course, 'visitor_rol': visitor.rol})
+            is_owners_teacher = True
         else:
             courses.append({'course': owner_course, 'visitor_rol': None})
+
+    if not is_owners_teacher:
+        return HttpResponseForbidden()
 
     courses = sorted(courses, key=lambda x: (x['course'].course.year, x['course'].course.semester), reverse=True)
 
