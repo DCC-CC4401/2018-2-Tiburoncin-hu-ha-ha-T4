@@ -90,37 +90,43 @@
                 <h5 class="font-weight-normal text-center text-muted">Selecciona un curso para ver tus notas</h5>
             </div>
             {% for c in courses %}
-                <div id="notas-resumen-{{ c.course_index }}" class="notas-resumen">
-                    <h4 class="d-inline-block mt-1">Tus Notas</h4>
-                    <h5 class="float-right mb-0 mt-2 text-muted" id="currentCurso">CC5402-1, 2018-2</h5>
+                {% if  c.grades|length  %}
+                    <div id="notas-resumen-{{ c.course_index }}" class="notas-resumen">
+                        <h4 class="d-inline-block mt-1">Tus Notas</h4>
+                        <h5 class="float-right mb-0 mt-2 text-muted" id="currentCurso">CC5402-1, 2018-2</h5>
 
-                    <div class="table-wrap table-responsive my-1"> <!-- "Envoltura" de la tabla -->
-                        <table class="table table-notas-perfil table-striped table-hover mb-0"> <!-- Tabla -->
-                            <!-- Encabezados de tabla (Table Headers) -->
-                            <thead class="thead-light">
-                                <tr> <!-- Fila (Table Row) -->
-                                    <th class="th-fecha">Publicada</th>
-                                    <th class="th-titulo">Título</th>
-                                    <th class="th-nota">Nota</th>
-                                </tr>
-                            </thead>
+                        <div class="table-wrap table-responsive my-1"> <!-- "Envoltura" de la tabla -->
+                            <table class="table table-notas-perfil table-striped table-hover mb-0"> <!-- Tabla -->
+                                <!-- Encabezados de tabla (Table Headers) -->
+                                <thead class="thead-light">
+                                    <tr> <!-- Fila (Table Row) -->
+                                        <th class="th-fecha">Publicada</th>
+                                        <th class="th-titulo">Título</th>
+                                        <th class="th-nota">Nota</th>
+                                    </tr>
+                                </thead>
 
-                            <!-- Cuerpo de tabla (Table Data) -->
-                            <tbody id="notas-resumen-table">
-                                {% for grade in c.grades %}
-                                    <tr>
-                                    <!-- Fecha de publicación -->
-                                    <td class="td-fecha">{{ grade.co_evaluation.init_date }}</td>
-                                    <!-- Título de coevaluación -->
-                                    <td>{{ grade.co_evaluation.name }}</td>
-                                    <!-- Nota -->
-                                    <td class="td-nota">{{ grade.grade }}</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+                                <!-- Cuerpo de tabla (Table Data) -->
+                                <tbody id="notas-resumen-table">
+                                    {% for grade in c.grades %}
+                                        <tr>
+                                        <!-- Fecha de publicación -->
+                                        <td class="td-fecha">{{ grade.co_evaluation.init_date }}</td>
+                                        <!-- Título de coevaluación -->
+                                        <td>{{ grade.co_evaluation.name }}</td>
+                                        <!-- Nota -->
+                                        <td class="td-nota">{{ grade.grade }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                </div>
+                {% else %}
+                    <div id="notas-resumen-{{ c.course_index }}" class="notas-resumen mt-5">
+                        <h5 class="font-weight-normal text-center text-muted">No hay evaluaciones publicadas</h5>
+                    </div>
+                {% endif %}
             {% endfor %}
         </div>
     </div>
