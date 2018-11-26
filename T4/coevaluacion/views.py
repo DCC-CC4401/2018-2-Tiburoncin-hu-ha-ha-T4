@@ -231,3 +231,24 @@ def peer_assessment(request, year, semester, code, section, id):
         'questions': questions
     }
     return render(request, 'coevaluacion-vista-alumno.html', context)
+
+@login_required
+def answer_coevaluation(request):
+    if request.POST:
+        ansCoevID = request.POST['ansCoev-id']
+        ansCoev = AnswerCoEvaluation.objects.get(id=ansCoevID)
+
+        ans = request.POST['bla']
+
+        userWhoAnswer = User.objects.get(rut=request.POST['userWhoAnswer-rut'])
+        userAnswered = User.objects.get(rut=request.POST['userAnswered-rut'])
+
+
+
+        messages.warning(request,'bla')
+        return redirect('/'+str(ansCoev.co_evaluation.course.year)
+                        +'/'+str(ansCoev.co_evaluation.course.semester)
+                        +'/'+str(ansCoev.co_evaluation.course.code.code)
+                        +'/'+str(ansCoev.co_evaluation.course.section_number)
+                        +'/peer_assessment'
+                        +'/'+str(ansCoev.id))
