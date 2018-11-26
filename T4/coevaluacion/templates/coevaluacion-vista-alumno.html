@@ -13,10 +13,10 @@
         <div class="col-md-4 mb-3">
             <h4 class="d-inline-block mt-1">Información</h4>
             <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">Título</h6>
-            <span>{{ ansCoev.co_evaluation.name }}</span>
+            <span>{{ coev.coev.name }}</span>
             <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">Curso</h6>
-            <span>{{ ansCoev.co_evaluation.course.code.code }} {{ ansCoev.co_evaluation.course.code.name }} {{ ansCoev.co_evaluation.course.year }},
-                {% if ansCoev.co_evaluation.course.semester == 1 %}
+            <span>{{ coev.coev.course.code.code }} {{ coev.coev.course.code.name }} {{ coev.coev.course.year }},
+                {% if coev.coev.course.semester == 1 %}
                     Primavera
                 {% else %}
                     Otoño
@@ -25,18 +25,22 @@
             <div class="row">
                 <div class="col-6">
                     <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">Fecha de inicio</h6>
-                    <span>{{ ansCoev.co_evaluation.get_init_date }}</span>
+                    <span>{{ coev.coev.get_init_date }}</span>
                 </div>
                 <div class="col-6">
                     <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">Fecha límite</h6>
-                    <span>{{ ansCoev.co_evaluation.get_end_date }}</span>
+                    <span>{{ coev.coev.get_end_date }}</span>
                 </div>
             </div>
             <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">Estado</h6>
-            <span>{{ ansCoev.state }}</span>
+            <span>{{ coev.status }}</span>
         </div>
         <!-- FIN Información -->
 
+
+        {% if coev.rol != "Estudiante" %}
+
+        {% else %}
         <!-- Tabla de alumnos que no han contestado -->
         <div class="col-md-6">
             <h4 class="d-inline-block mt-1">Tu grupo: {{ group.name }}</h4>
@@ -72,8 +76,20 @@
             </div>
         </div>
         <!-- FIN Tabla de alumnos que no han respondido -->
-    </div>
+        {% endif %}
+    {% for message in messages %}
+        <div class="alert
+        {% if message.tags == 'error' %}
+        alert-danger
+        {% else %}
+        alert-{{ message.tags }}
+        {% endif %}">{{ message }}</div>
+    {% endfor %}
 
+    </div>
+    {% if coev.rol != "Estudiante" %}
+
+    {% else %}
     {% if ansCoev.state == ansCoev.PENDENT %}
     <h4 class="d-inline-block mt-1 mb-0">Responder coevaluación</h4>
     <hr/>
@@ -88,6 +104,8 @@
                 <input type="hidden" name="ansCoev-id" value="{{ ansCoev.id }}">
                 <input type="hidden" name="userWhoAnswer-rut" value="{{ ansCoev.user.member.rut }}">
                 <input type="hidden" name="userAnswered-rut" value="{{ mate.teammate.member.rut }}">
+                <input type="hidden" name="group-id" value="{{ group.id }}">
+                <input type="hidden" name="coev-id" value="{{ ansCoev.co_evaluation.id }}">
                 <ol>
                     {% for question in questions %}
                     <div class="criterio-coeval">
@@ -139,6 +157,7 @@
 
     </div>
 
+    {% endif %}
     {% endif %}
 </div>
 
