@@ -25,11 +25,11 @@
             <div class="row">
                 <div class="col-6">
                     <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">Fecha de inicio</h6>
-                    <span>{{ ansCoev.co_evaluation.init_date }}</span>
+                    <span>{{ ansCoev.co_evaluation.get_init_date }}</span>
                 </div>
                 <div class="col-6">
                     <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">Fecha límite</h6>
-                    <span>{{ ansCoev.co_evaluation.end_date }}</span>
+                    <span>{{ ansCoev.co_evaluation.get_end_date }}</span>
                 </div>
             </div>
             <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">Estado</h6>
@@ -50,22 +50,6 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Estudiante 1</td>
-                            <td class="td-icon"></td>
-                        </tr>
-                        <tr class="tr-pendiente" onclick="jumpTo('responder-coeval')">
-                            <td>Estudiante 2 (clickeable)</td>
-                            <td class="td-icon">
-                                <a href="#responder-coeval" title="Responder coevaluación">
-                                    <img class="clickable-icon answer-icon wiggle" src="{% static "coevaluacion/icon/answer-icon.png" %}" alt="Responder coevaluación" width="28" height="28">
-                                </a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Estudiante 3</td>
-                            <td class="td-icon"></td>
-                        </tr>
                         {% for mate in teammates %}
                             {% if mate.coevaluated %}
                         <tr onclick="jumpTo('coev-{{ mate.teammate.member.first_name }}-{{ mate.teammate.member.last_name }}-{{ mate.teammate.member.rut }}')">
@@ -112,31 +96,31 @@
                             <textarea name="{{ question.id }}" id="{{ question.id }}-{{ mate.teammate.member.rut }}" cols="52" rows="4"></textarea>
                         {% else %}
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="1">
+                            <input class="form-check-input" type="radio" name="{{ question.id }}" id="{{ question.id }}-1" value="1">
                             <label class="form-check-label" for="inlineRadio1">1</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="2">
+                            <input class="form-check-input" type="radio" name="{{ question.id }}" id="{{ question.id }}-2" value="2">
                             <label class="form-check-label" for="inlineRadio2">2</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="3">
+                            <input class="form-check-input" type="radio" name="{{ question.id }}" id="{{ question.id }}-3" value="3">
                             <label class="form-check-label" for="inlineRadio3">3</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="4">
+                            <input class="form-check-input" type="radio" name="{{ question.id }}" id="{{ question.id }}-4" value="4">
                             <label class="form-check-label" for="inlineRadio3">4</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="5">
+                            <input class="form-check-input" type="radio" name="{{ question.id }}" id="{{ question.id }}-5" value="5">
                             <label class="form-check-label" for="inlineRadio3">5</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="6">
+                            <input class="form-check-input" type="radio" name="{{ question.id }}" id="{{ question.id }}-6" value="6">
                             <label class="form-check-label" for="inlineRadio3">6</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="7">
+                            <input class="form-check-input" type="radio" name="{{ question.id }}" id="{{ question.id }}-7" value="7">
                             <label class="form-check-label" for="inlineRadio3">7</label>
                         </div>
                         {% endif %}
