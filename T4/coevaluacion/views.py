@@ -214,10 +214,20 @@ def peer_assessment(request, year, semester, code, section, id):
     assessment = AnswerCoEvaluation.objects.get(id=id)
     group = UserInGroup.objects.get(member=assessment.user.member, group__course=assessment.co_evaluation.course).group
     usersInGroup = UserInGroup.objects.filter(group=group).exclude(member=assessment.user.member)
+    questions = QuestionsInCoEvaluation.objects.filter(co_evaluation=assessment.co_evaluation)
+    teamMates = list()
+    for user in usersInGroup:
+        coevaluated = AnswerQuestion.objects.filter(user_who_answer=assessment.user.member,
+                                                    user_related=user.member,
+                                                    group=group).exists()
+        teamMates.append({'teammate': user, 'coevaluated': coevaluated})
     context = {
         'user': logged_user,
         'is_teacher': is_teacher,
         'ansCoev': assessment,
-        'usersInGroup': usersInGroup
+        'group': group,
+        'usersInGroup': usersInGroup,
+        'teammates': teamMates,
+        'questions': questions
     }
     return render(request, 'coevaluacion-vista-alumno.html', context)
