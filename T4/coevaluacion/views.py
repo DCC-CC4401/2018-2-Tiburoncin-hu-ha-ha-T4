@@ -245,7 +245,7 @@ def peer_assessment(request, year, semester, code, section, id):
         'teammates': teamMates,
         'questions': questions
     }
-    return render(request, 'coevaluacion-vista-alumno.html', context)
+    return render(request, 'coevaluacion.html', context)
 
 @login_required
 def answer_coevaluation(request):
