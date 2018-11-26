@@ -142,40 +142,37 @@ def course(request, year, semester, code, section):
 
     visitor_in_course = members.get(member=visitor_user)
 
-    upper_table = list()
-    assessments = CoEvaluation.objects.filter(course=requested_course)
-    for assessment in assessments:
-        try:
-            status = AnswerCoEvaluation.objects.get(user=visitor_in_course, co_evaluation=assessment)
-        except AnswerCoEvaluation.DoesNotExist:
-            status = None
-        upper_table.append({'assessment': assessment, 'status': status})
-
     context = {
         'user': visitor_user,
         'user_in_course': visitor_in_course,
         'course': requested_course,
-        'members': members,
-        'upper_table': upper_table,
+        'upper_table': extended_assessments(visitor_in_course, requested_course),
         'is_teacher': is_visitor_teacher(request)}
 
+    # Si el user es docente, se agrega la información de los grupos al contexto
     if not visitor_in_course.is_student:
         groups = Group.objects.filter(course=requested_course)
-        usrs_in_groups = UserInGroup.objects.filter(group__in=groups, active=True)
-        active_groups = usrs_in_groups.values_list("group").distinct()
+        users_in_groups = UserInGroup.objects.filter(group__in=groups, active=True)
+        active_groups = users_in_groups.values_list("group").distinct()
         active_groups = Group.objects.filter(id__in=active_groups)
 
-        usr_in_groups_list = list()
+        user_in_groups_list = list()
         for group in active_groups:
-            group_members = usrs_in_groups.filter(group=group)
+            group_members = users_in_groups.filter(group=group)
 
             group_members_list = list()
             for group_member in group_members:
-                group_members_list.append(group_member.member)
+                assessments_in_course = CoEvaluation.objects.filter(course=requested_course)
+                grades_list = list()
+                for assessment_in_course in assessments_in_course:
+                    grades_per_assessment = GradesPerCoEvaluation.objects.get(member=group_member.member,
+                                                                              co_evaluation=assessment_in_course)
+                    grades_list.append(grades_per_assessment)
+                group_members_list.append({'member': group_member.member, 'grades_list': grades_list})
 
-            usr_in_groups_list.append({'group': group, 'members': group_members_list})
+            user_in_groups_list.append({'group': group, 'members': group_members_list})
 
-        context['usr_in_groups_list'] = usr_in_groups_list
+        context['user_in_groups_list'] = user_in_groups_list
 
     return render(request, "course.html", context)
 

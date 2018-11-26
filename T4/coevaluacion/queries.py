@@ -111,8 +111,13 @@ def is_visitor_teacher(request):
     return is_teacher
 
 
-def belongs_to_course(user, course):
-    members = UserInCourse.objects.filter(course=course)
-    return
-
-
+def extended_assessments(user_in_course, course):
+    upper_table = list()
+    assessments = CoEvaluation.objects.filter(course=course)
+    for assessment in assessments:
+        try:
+            status = AnswerCoEvaluation.objects.get(user=user_in_course, co_evaluation=assessment)
+        except AnswerCoEvaluation.DoesNotExist:
+            status = None
+        upper_table.append({'assessment': assessment, 'status': status})
+    return upper_table

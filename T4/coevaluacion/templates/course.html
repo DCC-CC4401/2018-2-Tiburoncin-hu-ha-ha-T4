@@ -105,23 +105,25 @@
             <button type="button" id="add-coev-btn" class="btn btn-primary-custom float-right">Agregar grupo</button>
         </div>
         <div class="row">
-            {% for usrs_in_group in usr_in_groups_list %}
+            {% for users_in_group in user_in_groups_list %}
                 <div class="col-5 mx-auto table-wrap table-responsive my-2">
 
                     <table class="table table-striped table-hover mb-0">
                         <thead class="thead-light">
                             <tr>
-                                <th>{{ usrs_in_group.group.name }}</th>
-                                <th>Tarea 1</th>
-                                <th>Tarea 2</th>
+                                <th>{{ users_in_group.group.name }}</th>
+                                {% for grade in users_in_group.members.0.grades_list %}
+                                    <th>{{ grade.co_evaluation.name }}</th>
+                                {% endfor %}
                             </tr>
                         </thead>
                         <tbody>
-                            {% for member in usrs_in_group.members %}
+                            {% for member in users_in_group.members %}
                                 <tr>
-                                    <td>{{ member.first_name }} {{ member.last_name }}</td>
-                                    <td>5.0</td>
-                                    <td>3.9</td>
+                                    <td>{{ member.member.first_name }} {{ member.member.last_name }}</td>
+                                    {% for grade in member.grades_list %}
+                                        <td>{{ grade.grade }}</td>
+                                    {% endfor %}
                                 </tr>
                             {% endfor %}
                         </tbody>
