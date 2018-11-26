@@ -40,6 +40,15 @@
                 <button class="btn btn-lg btn-primary-custom px-5 mt-3" type="submit">Ingresar</button>
                 <p class="mt-4 text-muted small">¿No has recibido tu contraseña?<br>¡Contacta a tu profesor/administrador!</p>
             </form>
+
+        {% for message in messages %}
+            <div class="alert
+            {% if message.tags == 'error' %}
+            alert-danger
+            {% else %}
+            alert-{{ message.tags }}
+            {% endif %}">{{ message }}</div>
+        {% endfor %}
         </div>
     </body>
     </html>
