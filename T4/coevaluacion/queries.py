@@ -121,3 +121,18 @@ def extended_assessments(user_in_course, course):
             status = None
         upper_table.append({'assessment': assessment, 'status': status})
     return upper_table
+
+def list_coevs_user(user_in_courses):
+    list_coevs = list()
+    for user_in_course in user_in_courses:
+        coevs = CoEvaluation.objects.filter(course=user_in_course.course)
+        for coev in coevs:
+            if user_in_course.rol != "Estudiante":
+                ansCoev = None
+                ansCoevID = None
+            else:
+                ansCoev = AnswerCoEvaluation.objects.get(user=user_in_course, co_evaluation=coev)
+                ansCoevID = ansCoev.id
+            list_coevs.append({'coev': coev, 'ansCoev': ansCoev, 'ansCoevID': ansCoevID, 'rol': user_in_course.rol,
+                               'status': status_coev(user_in_course, coev)})
+    return list_coevs

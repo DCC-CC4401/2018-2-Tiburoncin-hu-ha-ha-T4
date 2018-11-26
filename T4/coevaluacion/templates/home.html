@@ -29,7 +29,7 @@
                     <!-- Cuerpo de tabla (Table Data) -->
                     <tbody>
                         {% for coev in list_coevs %}
-                        <tr>
+                        <tr class="clickable-row" data-href='{% url 'peer_assessment' year=coev.coev.course.year semester=coev.coev.course.semester code=coev.coev.course.code.code section=coev.coev.course.section_number semester=coev.coev.course.semester id=coev.coev.id %}'>
                             <td class="td-fecha">{{ coev.coev.init_date }}</td>
                             <td>{{ coev.coev.name }}</td>
                             <td class="td-curso-full">
@@ -53,7 +53,7 @@
                             <td>{{ coev.status }}</td>
                             {% if coev.status == "Pendiente" %}
                             <td class="td-icon">
-                                <a href="{% url 'peer_assessment' year=coev.coev.course.year semester=coev.coev.course.semester code=coev.coev.course.code.code section=coev.coev.course.section_number semester=coev.coev.course.semester id=coev.ansCoevID %}" title="Responder coevaluación">
+                                <a href="{% url 'peer_assessment' year=coev.coev.course.year semester=coev.coev.course.semester code=coev.coev.course.code.code section=coev.coev.course.section_number semester=coev.coev.course.semester id=coev.coev.id %}" title="Responder coevaluación">
                                     <img class="clickable-icon answer-icon wiggle" src="{% static '/coevaluacion/icon/answer-icon.png' %}" alt="Responder coevaluación" width="28" height="28">
                                 </a>
                             </td>

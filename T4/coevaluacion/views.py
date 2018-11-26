@@ -66,7 +66,7 @@ def home(request):
                'userInCourse': logged_courses,
                'coevs': assessments,
                'coevsInCourse': course_assessments,
-               'list_coevs': list_coevs}
+               'list_coevs': list_coevs_user(logged_courses)}
 
     return render(request, 'home.html', context)
 
@@ -208,20 +208,37 @@ def peer_assessment(request, year, semester, code, section, id):
             is_teacher = True
             break
 
-    assessment = AnswerCoEvaluation.objects.get(id=id)
-    group = UserInGroup.objects.get(member=assessment.user.member, group__course=assessment.co_evaluation.course,
-                                    active=True).group
-    usersInGroup = UserInGroup.objects.filter(group=group).exclude(member=assessment.user.member)
-    questions = QuestionsInCoEvaluation.objects.filter(co_evaluation=assessment.co_evaluation)
-    teamMates = list()
-    for user in usersInGroup:
-        coevaluated = AnswerQuestion.objects.filter(user_who_answer=assessment.user.member,
-                                                    user_related=user.member,
-                                                    group=group).exists()
-        teamMates.append({'teammate': user, 'coevaluated': coevaluated})
+    coev = CoEvaluation.objects.get(id=id)
+    userInCourse = UserInCourse.objects.get(member=logged_user, course=coev.course)
+
+    extend_coev = {}
+    for coev_user in list_coevs_user(logged_courses):
+        if coev_user['coev'] == coev:
+            extend_coev = coev_user
+            break
+    try:
+        assessment = AnswerCoEvaluation.objects.get(user=userInCourse, co_evaluation=coev)
+
+        group = UserInGroup.objects.get(member=assessment.user.member, group__course=assessment.co_evaluation.course,
+                                        active=True).group
+        usersInGroup = UserInGroup.objects.filter(group=group).exclude(member=assessment.user.member)
+        questions = QuestionsInCoEvaluation.objects.filter(co_evaluation=assessment.co_evaluation)
+        teamMates = list()
+        for user in usersInGroup:
+            coevaluated = AnswerQuestion.objects.filter(user_who_answer=assessment.user.member,
+                                                        user_related=user.member,
+                                                        group=group).exists()
+            teamMates.append({'teammate': user, 'coevaluated': coevaluated})
+    except:
+        assessment = None
+        group = None
+        usersInGroup = None
+        questions = None
+        teamMates = list()
     context = {
         'user': logged_user,
         'is_teacher': is_teacher,
+        'coev': extend_coev,
         'ansCoev': assessment,
         'group': group,
         'usersInGroup': usersInGroup,
@@ -236,17 +253,79 @@ def answer_coevaluation(request):
         ansCoevID = request.POST['ansCoev-id']
         ansCoev = AnswerCoEvaluation.objects.get(id=ansCoevID)
 
-        ans = request.POST['bla']
+        # ans = request.POST['bla']
 
         userWhoAnswer = User.objects.get(rut=request.POST['userWhoAnswer-rut'])
         userAnswered = User.objects.get(rut=request.POST['userAnswered-rut'])
 
+        group = Group.objects.get(id=request.POST['group-id'])
+        coev = CoEvaluation.objects.get(id=request.POST['coev-id'])
+
+        exists_answer_coev = AnswerQuestion.objects.filter(
+            user_who_answer=userWhoAnswer, user_related=userAnswered,
+            group=group).exists()
+
+        questions = QuestionsInCoEvaluation.objects.filter(co_evaluation=coev)
+        list_answers = list()
+        no_pregunta = 0
+        text_id_questions = ''
+        for question in questions:
+            no_pregunta +=1
+            text_id_questions = text_id_questions + ' ' + str(question.id)
+            try:
+                response = request.POST[str(question.id)]
+            except:
+                messages.error(request, 'No seleccionó respuesta para la pregunta '
+                               + str(no_pregunta))
+                return redirect('/' + str(ansCoev.co_evaluation.course.year)
+                                + '/' + str(ansCoev.co_evaluation.course.semester)
+                                + '/' + str(ansCoev.co_evaluation.course.code.code)
+                                + '/' + str(ansCoev.co_evaluation.course.section_number)
+                                + '/peer_assessment'
+                                + '/' + str(ansCoev.co_evaluation.id))
+
+            if exists_answer_coev:
+                ans_question = AnswerQuestion.objects.get(
+                    user_who_answer=userWhoAnswer, user_related=userAnswered,
+                    group=group, question=question
+                )
+
+                ans_question.response = response
+                list_answers.append(ans_question)
+            else:
+                ans_question = AnswerQuestion()
+                ans_question.user_who_answer = userWhoAnswer
+                ans_question.user_related = userAnswered
+                ans_question.group = group
+                ans_question.question = question
+                ans_question.response = response
+                list_answers.append(ans_question)
+
+        for ans in list_answers:
+            ans.save()
+
+        teammates = UserInGroup.objects.filter(group=group).exclude(member=userWhoAnswer)
+        coev_answered = True
+        for teammate in teammates:
+            coev_answered = coev_answered \
+                            and AnswerQuestion.objects.filter(
+                user_who_answer=userWhoAnswer, user_related=teammate.member,
+                group=group
+            ).exists()
+
+        if coev_answered:
+            ansCoev.state = ansCoev.ANSWERED
+            ansCoev.save()
+
+        messages.success(request, 'Respondida Coevaluación de '
+                         + userAnswered.first_name + ' ' + userAnswered.last_name
+                         + ' Correctamente')
 
 
-        messages.warning(request,'bla')
+
         return redirect('/'+str(ansCoev.co_evaluation.course.year)
                         +'/'+str(ansCoev.co_evaluation.course.semester)
                         +'/'+str(ansCoev.co_evaluation.course.code.code)
                         +'/'+str(ansCoev.co_evaluation.course.section_number)
                         +'/peer_assessment'
-                        +'/'+str(ansCoev.id))
+                        +'/'+str(ansCoev.co_evaluation.id))
