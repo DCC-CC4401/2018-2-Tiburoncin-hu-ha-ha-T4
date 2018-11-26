@@ -47,9 +47,9 @@
                         {% for tr in upper_table %}
                             <!-- La coevaluación solo puede estar pendiente si el usuario es estudiante -->
                             {% if user_in_course.is_student and tr.status.is_pending %}
-                                <tr class="tr-pendiente">
+                                <tr class="tr-pendiente clickable-row" data-href="{% url 'peer_assessment' year=tr.assessment.course.year semester=tr.assessment.course.semester code=tr.assessment.course.code.code section=tr.assessment.course.section_number id=tr.assessment.id %}">
                             {% else %}
-                                <tr>
+                                <tr class="clickable-row" data-href="{% url 'peer_assessment' year=tr.assessment.course.year semester=tr.assessment.course.semester code=tr.assessment.course.code.code section=tr.assessment.course.section_number id=tr.assessment.id %}">
                             {% endif  %}
 
                                 <td class="td-fecha"> {{ tr.assessment.get_init_date }} </td>
