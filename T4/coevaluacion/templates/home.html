@@ -87,39 +87,6 @@
                     </thead>
                     <!-- Cuerpo de tabla (Table Data) -->
                     <tbody>
-                        <tr>
-                            <td class="td-curso-full">
-                                <div class="cargos cargos-alumno tooltip-custom">
-                                    <span class="tooltiptext"></span>
-                                </div>
-                                <span class="curso-nombre">Proyecto de Software</span>
-                                <br>
-                                <span class="curso-codigo">CC5402-1</span>
-                            </td>
-                            <td>2018-2</td>
-                        </tr>
-                        <tr>
-                            <td class="td-curso-full">
-                                <div class="cargos cargos-alumno tooltip-custom">
-                                    <span class="tooltiptext"></span>
-                                </div>
-                                <span class="curso-nombre">Ingeniería de Software II</span>
-                                <br>
-                                <span class="curso-codigo">CC5401-1</span>
-                            </td>
-                            <td>2018-1</td>
-                        </tr>
-                        <tr>
-                            <td class="td-curso-full">
-                                <div class="cargos cargos-alumno tooltip-custom">
-                                    <span class="tooltiptext"></span>
-                                </div>
-                                <span class="curso-nombre">Ingeniería de Software I</span>
-                                <br>
-                                <span class="curso-codigo">CC4401-1</span>
-                            </td>
-                            <td>2017-1</td>
-                        </tr>
                     {% for uic in userInCourse %}
                         <tr class="clickable-row" data-href='{% url "course" year=uic.course.year semester=uic.course.semester code=uic.course.code.code section=uic.course.section_number%}'>
                             <!--<td><a href="{% url "course" year=uic.course.year semester=uic.course.semester code=uic.course.code.code section=uic.course.section_number%}"></a></td>-->
