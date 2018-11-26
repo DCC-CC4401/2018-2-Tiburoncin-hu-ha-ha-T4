@@ -209,7 +209,8 @@ def peer_assessment(request, year, semester, code, section, id):
             break
 
     assessment = AnswerCoEvaluation.objects.get(id=id)
-    group = UserInGroup.objects.get(member=assessment.user.member, group__course=assessment.co_evaluation.course).group
+    group = UserInGroup.objects.get(member=assessment.user.member, group__course=assessment.co_evaluation.course,
+                                    active=True).group
     usersInGroup = UserInGroup.objects.filter(group=group).exclude(member=assessment.user.member)
     questions = QuestionsInCoEvaluation.objects.filter(co_evaluation=assessment.co_evaluation)
     teamMates = list()
