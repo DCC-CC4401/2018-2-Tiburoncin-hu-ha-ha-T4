@@ -124,6 +124,7 @@ def extended_assessments(user_in_course, course):
 
 def list_coevs_user(user_in_courses):
     list_coevs = list()
+    coevs = CoEvaluation.objects.filter(course=0)
     for user_in_course in user_in_courses:
         coevs = CoEvaluation.objects.filter(course=user_in_course.course)
         for coev in coevs:
@@ -135,4 +136,5 @@ def list_coevs_user(user_in_courses):
                 ansCoevID = ansCoev.id
             list_coevs.append({'coev': coev, 'ansCoev': ansCoev, 'ansCoevID': ansCoevID, 'rol': user_in_course.rol,
                                'status': status_coev(user_in_course, coev)})
-    return list_coevs
+    list_coevs.sort(key=lambda item: item['coev'].init_date, reverse=True)
+    return list_coevs[:10]
