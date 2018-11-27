@@ -30,7 +30,8 @@ def login_submit(request):
 @login_required
 def home(request):
     logged_user = User.objects.get(user=request.user)
-    logged_courses = UserInCourse.objects.filter(member=logged_user)
+    logged_courses = UserInCourse.objects.filter(member=logged_user).order_by('-course__year', '-course__semester')
+
     assessments = CoEvaluation.objects.filter(course=0)
 
     is_teacher = False
